@@ -10,6 +10,7 @@ import FAQs from "../LandingPageComponents/FAQs";
 import BlogsAndArticles from "../LandingPageComponents/Blogs";
 import HeroSection from "../LandingPageComponents/Hero";
 import Overview from "../LandingPageComponents/overview";
+import RoleSelector from "../LandingPageComponents/RoleSection";
 
 const LandingPage = () => {
   return (
@@ -17,6 +18,7 @@ const LandingPage = () => {
       <Header />
       <HeroSection/>
       <Overview/>
+      <RoleSelector/>
       {/* <TaglineAndImage /> */}
       {/* <Topics /> */}
       {/* <Reviews />
