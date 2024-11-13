@@ -8,6 +8,8 @@ import Dashboard from "./components/Dashboard/dashboard";
 import HomePage from "./components/Home/home";
 import ProfileManagement from "./components/Profile/profile";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import ContactUs from "./components/LandingPageComponents/overview";
+import AdminPage from "./components/LoginAndSignupComponents/Admin"
 
 const App = () => {
   return (
@@ -15,8 +17,10 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/" element={<LandingPage />} />
+        <Route path="/contactus" element={<ContactUs />} />
 
         <Route
           path="/dashboard"

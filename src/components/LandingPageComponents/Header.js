@@ -4,7 +4,7 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline';
 
 const Header = () => {
     return (
-        <header className="bg-white shadow">
+        <header className="bg-white shadow z-10 relative">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center py-4 md:space-x-10">
                     {/* Logo */}
@@ -18,23 +18,23 @@ const Header = () => {
                                     <Disclosure.Button className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                                         {open ? <XIcon className="h-6 w-6" aria-hidden="true" /> : <MenuIcon className="h-6 w-6" aria-hidden="true" />}
                                     </Disclosure.Button>
-                                    <Disclosure.Panel className="md:hidden">
+                                    <Disclosure.Panel className="md:hidden z-10">
                                         <nav className="space-y-1">
                                             <a href="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">Home</a>
-                                            <Disclosure as="div" className="space-y-1">
+                                            <Disclosure as="div" className="space-y-1 z-10">
                                                 <Disclosure.Button className="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
                                                     Campaigns
                                                 </Disclosure.Button>
-                                                <Disclosure.Panel className="pl-5">
+                                                <Disclosure.Panel className="pl-5 z-10">
                                                     <a href="/campaigns/1" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 1</a>
                                                     <a href="/campaigns/2" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 2</a>
                                                 </Disclosure.Panel>
                                             </Disclosure>
-                                            <Disclosure as="div" className="space-y-1">
+                                            <Disclosure as="div" className="space-y-1 z-10">
                                                 <Disclosure.Button className="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
                                                     Roles
                                                 </Disclosure.Button>
-                                                <Disclosure.Panel className="pl-5">
+                                                <Disclosure.Panel className="pl-5 z-10">
                                                     <a href="/roles/1" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 1</a>
                                                     <a href="/roles/2" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 2</a>
                                                 </Disclosure.Panel>
@@ -56,23 +56,23 @@ const Header = () => {
                     {/* Desktop menu */}
                     <nav className="hidden md:flex flex-1 justify-center space-x-8">
                         <a href="/" className="text-base font-medium text-gray-700 hover:text-gray-900">Home</a>
-                        <div className="relative group">
+                        <div className="relative group z-10">
                             <button className="text-base font-medium text-gray-700 hover:text-gray-900">Campaigns</button>
-                            <div className="absolute left-0 hidden mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block">
+                            <div className="absolute left-0 hidden mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block z-10">
                                 <a href="/campaigns/1" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 1</a>
                                 <a href="/campaigns/2" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 2</a>
                             </div>
                         </div>
-                        <div className="relative group">
+                        <div className="relative group z-10">
                             <button className="text-base font-medium text-gray-700 hover:text-gray-900">Roles</button>
-                            <div className="absolute left-0 hidden mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block">
+                            <div className="absolute left-0 hidden mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block z-10">
                                 <a href="/roles/1" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 1</a>
                                 <a href="/roles/2" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 2</a>
                             </div>
                         </div>
                         <a href="/about" className="text-base font-medium text-gray-700 hover:text-gray-900">About Us</a>
                         <a href="/faqs" className="text-base font-medium text-gray-700 hover:text-gray-900">FAQs</a>
-                        <a href="/contact" className="text-base font-medium text-gray-700 hover:text-gray-900">Contact Us</a>
+                        <a href="/contactUs" className="text-base font-medium text-gray-700 hover:text-gray-900">Contact Us</a>
                     </nav>
 
                     {/* Action buttons */}

@@ -152,6 +152,10 @@ const LoginPage = () => {
           <a href="/signup" className="text-blue-500 hover:underline">
             New user? Sign up
           </a>
+          <span className="mx-2 text-gray-500">•</span>
+          <a href="/admin" className="text-blue-500 hover:underline">
+            Admin? Click
+          </a>
         </div>
       </div>
     </div>
