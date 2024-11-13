@@ -8,7 +8,7 @@ import Dashboard from "./components/Dashboard/dashboard";
 import HomePage from "./components/Home/home";
 import ProfileManagement from "./components/Profile/profile";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import ContactUs from "./components/LandingPageComponents/overview";
+import ContactUs from "./components/LandingPageComponents/contactUs";
 import AdminPage from "./components/LoginAndSignupComponents/Admin"
 
 const App = () => {
