@@ -1,43 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const FAQs = () => {
-  const faqs = [
+  const faqData = [
     {
-      question: "What is Structify?",
-      answer: "Structify is an intelligent tutoring system designed to help users learn data structures in a gamified learning environment. It covers major data structures topics such as linked lists, queues, and stacks."
+      question: "What is Savor and Serve?",
+      answer: "Savor and Serve is a charity hub designed to connect donors, needy individuals, shops, and NGOs. It provides a streamlined platform to manage donations, issue vouchers, and support various causes efficiently.",
     },
     {
-      question: "How does the learning process work on Structify?",
-      answer: "Structify adapts to each user's learning pace and style and uses interactive lessons, quizzes, and coding challenges to teach data structures. Users progress through different levels, earning points and badges as they master each concept."
+      question: "How do I donate through Savor and Serve?",
+      answer: "Simply sign up as a donor, browse through listed NGOs, shops, and campaigns, and select the causes you wish to support. You can also use flexible payment options, including digital vouchers, to make your donations.",
     },
     {
-      question: "Is Structify suitable for beginners?",
-      answer: "Yes, Structify is designed for learners of all levels. It starts with the basics of each data structure and gradually increases in complexity. Beginners can start from scratch, while more advanced users can jump to more challenging topics."
+      question: "What options are available for NGOs on the platform?",
+      answer: "NGOs can register on the platform, create and manage projects, and track donations. They can also suggest individuals in need and list packages donors can purchase to support specific causes.",
     },
     {
-      question: "Can I track my progress on Structify?",
-      answer: "Absolutely! Structify provides a personalized dashboard where you can see your progress, completed lessons, earned badges, and overall performance."
+      question: "Can I track the impact of my donations?",
+      answer: "Yes, Savor and Serve provides a dashboard where you can view detailed tracking of your contributions, including where the funds go and the impact they create.",
+    },
+    {
+      question: "What is the Voucher Redemption System for Suppliers?",
+      answer: "Registered suppliers can redeem vouchers issued to needy individuals by entering a unique tracking ID. This system ensures vouchers are used correctly and provides a confirmation of redemption.",
+    },
+    {
+      question: "How does the platform handle needy individuals?",
+      answer: "Needy individuals can be suggested by NGOs, and upon verification, they are added to the platform. Vouchers can then be issued to these individuals, allowing them to access support from registered shops.",
+    },
+    {
+      question: "How do I become a volunteer?",
+      answer: "To become a volunteer, please email us at info@myimpactmeter.com with the title 'Volunteer,' and we will send you the volunteer pack with all necessary information.",
     }
   ];
 
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const toggleFAQ = (index) => {
+    setActiveIndex(activeIndex === index ? null : index);
+  };
+
   return (
-    <div className="relative py-16 overflow-hidden">
-      <svg className="absolute top-0 left-0 w-full" height="48" viewBox="0 0 100 10" preserveAspectRatio="none">
-        <path d="M0 10 C 30 0, 70 0, 100 10 L 100 0 L 0 0 Z" fill="#3b82f6" />
-      </svg>
-      {/* <svg className="absolute bottom-0 left-0 w-full" height="48" viewBox="0 0 100 10" preserveAspectRatio="none">
-        <path d="M0 0 C 30 10, 70 10, 100 0 L 100 10 L 0 10 Z" fill="#3b82f6" />
-      </svg> */}
-      <div className="max-w-3xl mx-auto px-4 py-8 bg-white rounded-lg shadow-lg relative z-10">
-        <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-        {faqs.map((faq, index) => (
-          <details key={index} className="mb-4 border-b pb-4">
-            <summary className="font-semibold text-lg cursor-pointer hover:text-blue-500 transition-colors duration-200">
-              {faq.question}
-            </summary>
-            <p className="mt-2 text-gray-600">{faq.answer}</p>
-          </details>
-        ))}
+    <div className="bg-gray-100 py-10">
+      <div className="max-w-4xl mx-auto px-6">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Frequently Asked Questions</h2>
+        <div className="space-y-6">
+          {faqData.map((faq, index) => (
+            <div
+              key={index}
+              className="p-6 bg-white rounded-lg shadow-md cursor-pointer transition duration-300"
+              onClick={() => toggleFAQ(index)}
+            >
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-800">{faq.question}</h3>
+                <span className={`transform transition-transform duration-300 ${activeIndex === index ? "rotate-180" : "rotate-0"}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+              </div>
+              {activeIndex === index && (
+                <div className="mt-4 text-gray-600">
+                  {faq.answer}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

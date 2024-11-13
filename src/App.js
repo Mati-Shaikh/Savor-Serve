@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import ContactUs from "./components/ContactPage/contactPage";
 import AdminPage from "./components/LoginAndSignupComponents/Admin"
 import AboutUs from "./components/AboutUsPage/aboutus";
+import FAQs from "./components/FAQsPage/faqsPage";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/faqs" element={<FAQs />} />
 
         <Route
           path="/dashboard"
