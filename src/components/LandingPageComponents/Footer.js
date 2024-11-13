@@ -7,7 +7,7 @@ const Footer = () => {
             <div className="max-w-6xl mx-auto px-4">
                 <div className="flex flex-wrap justify-between">
                     <div className="w-full md:w-1/4 mb-4">
-                        <h3 className="font-bold mb-2">EventServe</h3>
+                        <h3 className="font-bold mb-2">Savor and Serve</h3>
                         <div className="flex space-x-4 mt-4">
                             <Facebook size={20} />
                             <Instagram size={20} />
@@ -30,7 +30,7 @@ const Footer = () => {
                     </div>
                 </div>
                 <div className="mt-8 text-sm">
-                <p>© 2024 Savor & Serve, Inc. EventServe and the EventServe logo are trademarks of EventServe, Inc.</p>
+                <p>© 2024 Savor & Serve, Inc. Savor and Serve and the savor-serve logo are trademarks of EventServe, Inc.</p>
                     <div className="mt-2">
                         <a href="/" className="hover:text-gray-300 mr-4">Terms of service</a>
                         <a href="/" className="hover:text-gray-300 mr-4">Privacy policy</a>

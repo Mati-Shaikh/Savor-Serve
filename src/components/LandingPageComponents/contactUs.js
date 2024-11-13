@@ -1,8 +1,10 @@
 import React from 'react';
 import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa';
+import Navbar from './Header'
 
 const ContactUs = () => {
   return (
+    
     <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <h2 className="text-3xl font-bold text-center mb-4">Connect With Us Today!</h2>
       <p className="text-gray-600 text-center mb-8">
