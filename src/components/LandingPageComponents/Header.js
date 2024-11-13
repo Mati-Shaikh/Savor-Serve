@@ -35,10 +35,10 @@ const Header = () => {
                                                     Roles
                                                 </Disclosure.Button>
                                                 <Disclosure.Panel className="pl-5 z-10">
-                                                    <a href="/roles/1" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Impactor</a>
-                                                    <a href="/roles/2" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">NGO</a>
+                                                    <a href="/roles/1" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin</a>
+                                                    <a href="/ngo" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">NGO</a>
                                                     <a href="/roles/3" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Grocery Supplier</a>
-                                                    <a href="/roles/4" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Educational Supplier</a>
+                                                    <a href="/roles/4" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Donor</a>
                                                 </Disclosure.Panel>
                                             </Disclosure>
                                             <a href="/aboutus" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">About Us</a>
@@ -67,11 +67,11 @@ const Header = () => {
                         </div>
                         <div className="relative group z-10">
                             <button className="text-base font-medium text-gray-700 hover:text-gray-900">Roles</button>
-                            <div className="absolute left-0 hidden mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block z-10">
-                            <a href="/roles/1" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Impactor</a>
-                                                    <a href="/roles/2" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">NGO</a>
+                            <div className="absolute left-0 hidden w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block z-10">
+                            <a href="/roles/1" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin</a>
+                                                    <a href="/ngo" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">NGO</a>
                                                     <a href="/roles/3" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Grocery Supplier</a>
-                                                    <a href="/roles/4" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Educational Supplier</a>
+                                                    <a href="/roles/4" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Donor</a>
                             </div>
                         </div>
                         <a href="/aboutus" className="text-base font-medium text-gray-700 hover:text-gray-900">About Us</a>

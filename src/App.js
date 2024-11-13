@@ -12,6 +12,7 @@ import ContactUs from "./components/ContactPage/contactPage";
 import AdminPage from "./components/LoginAndSignupComponents/Admin"
 import AboutUs from "./components/AboutUsPage/aboutus";
 import FAQs from "./components/FAQsPage/faqsPage";
+import NGO from "./components/NGOPage/ngoPage";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/faqs" element={<FAQs />} />
+        <Route path="/ngo" element={<NGO />} />
 
         <Route
           path="/dashboard"
