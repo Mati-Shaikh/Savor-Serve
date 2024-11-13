@@ -34,7 +34,7 @@ const Overview = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Main Title */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-pink-600 mb-6">What is Savor and Serve?</h1>
+          <h1 className="text-5xl font-bold text-blue-600 mb-6">What is Savor and Serve?</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             An easy-to-use digital donation platform where you can connect with trusted NGOs, directly help people in need, and make a difference from anywhere in the world.
           </p>

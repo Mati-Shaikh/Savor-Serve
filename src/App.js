@@ -13,6 +13,8 @@ import AdminPage from "./components/LoginAndSignupComponents/Admin"
 import AboutUs from "./components/AboutUsPage/aboutus";
 import FAQs from "./components/FAQsPage/faqsPage";
 import NGO from "./components/NGOPage/ngoPage";
+import GrocerySupplierDashboard from "./components/GroceryDashboard/groceryDashboard";
+import DonorDashboard from "./components/DonorDashboard/donorDasboard";
 
 const App = () => {
   return (
@@ -27,6 +29,8 @@ const App = () => {
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/faqs" element={<FAQs />} />
         <Route path="/ngo" element={<NGO />} />
+        <Route path="/grocerydashboard" element={<GrocerySupplierDashboard/>}/>
+        <Route path="/donordashboard" element={<DonorDashboard/>}/>
 
         <Route
           path="/dashboard"

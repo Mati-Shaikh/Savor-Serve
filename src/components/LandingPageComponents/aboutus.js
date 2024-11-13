@@ -54,7 +54,7 @@ const AboutUs = () => {
 
       {/* Volunteer Invitation Section */}
       <div className="max-w-3xl mx-auto text-center bg-white rounded-lg shadow-lg p-8 mb-12">
-        <h2 className="text-3xl font-bold text-pink-600 mb-4">Would you like to become a Volunteer?</h2>
+        <h2 className="text-3xl font-bold text-blue-600 mb-4">Would you like to become a Volunteer?</h2>
         <p className="text-gray-600 mb-4">
           My Impact Meter needs all the volunteers we can get. If you would like to become a volunteer, please email us at <a href="mailto:info@myimpactmeter.com" className="text-blue-600">info@myimpactmeter.com</a> with the title: “Volunteer” and we will send you the whole volunteer pack.
         </p>
