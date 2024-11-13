@@ -70,7 +70,7 @@ const Header = () => {
                                 <a href="/roles/2" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 2</a>
                             </div>
                         </div>
-                        <a href="/about" className="text-base font-medium text-gray-700 hover:text-gray-900">About Us</a>
+                        <a href="/aboutus" className="text-base font-medium text-gray-700 hover:text-gray-900">About Us</a>
                         <a href="/faqs" className="text-base font-medium text-gray-700 hover:text-gray-900">FAQs</a>
                         <a href="/contactUs" className="text-base font-medium text-gray-700 hover:text-gray-900">Contact Us</a>
                     </nav>

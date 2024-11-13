@@ -10,6 +10,7 @@ import ProfileManagement from "./components/Profile/profile";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import ContactUs from "./components/ContactPage/contactPage";
 import AdminPage from "./components/LoginAndSignupComponents/Admin"
+import AboutUs from "./components/AboutUsPage/aboutus";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/aboutus" element={<AboutUs />} />
 
         <Route
           path="/dashboard"
