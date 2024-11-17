@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +7,8 @@ const SignupPage = () => {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [age, setAge] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [role, setRole] = useState('Donor'); // New state for role
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ const SignupPage = () => {
       LastName: lastName,
       Email: email,
       Password: password,
-      Age: age,
+      PhoneNumber: phoneNumber,
+      Role: role,  // Include role in the data to be sent to the backend
     };
 
     try {
@@ -60,7 +62,7 @@ const SignupPage = () => {
       <div className="flex-1 flex items-center justify-center bg-white p-10">
         <div className="w-full max-w-md">
           <h2 className="text-2xl font-bold text-center mb-6">
-          Create a free account to unlock your savor and serve journey
+            Create a free account to unlock your savor and serve journey
           </h2>
           <div className="flex justify-center space-x-4 mb-6">
             <button className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition-colors">
@@ -94,47 +96,58 @@ const SignupPage = () => {
               />
               <span className="absolute right-3 top-2 text-gray-400 cursor-pointer">?</span>
             </div>
-            {email && (
-              <>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <div className="flex space-x-4">
-                  <input
-                    type="text"
-                    placeholder="First name"
-                    className="w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="text"
-                    placeholder="Last name"
-                    className="w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="relative">
-                  <input
-                    type="number"
-                    placeholder="Age"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    required
-                  />
-                  <span className="absolute right-3 top-2 text-gray-400 cursor-pointer">?</span>
-                </div>
-              </>
-            )}
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <div className="flex space-x-4">
+              <input
+                type="text"
+                placeholder="First name"
+                className="w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Last name"
+                className="w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="relative">
+              <input
+                type="tel"
+                placeholder="Phone number"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+              />
+              <span className="absolute right-3 top-2 text-gray-400 cursor-pointer">?</span>
+            </div>
+
+            {/* Role Selection */}
+            <div className="relative">
+            <select
+  value={role}
+  onChange={(e) => setRole(e.target.value)}
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+>
+  <option value="Donor">Donor</option>
+  <option value="Admin">Admin</option>
+  <option value="NGO">NGO</option>
+  <option value="GroceryShop">GroceryShop</option>
+</select>
+            </div>
+
             <button
               type="submit"
               className="w-full bg-gray-800 text-white text-lg font-semibold py-2 rounded-full hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"

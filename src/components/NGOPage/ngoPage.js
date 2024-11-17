@@ -7,17 +7,7 @@ import NGO from "../LandingPageComponents/NGO";
 const ContactPage = () => {
   return (
     <div>
-      <Header />
       <NGO/>
-      
-      {/* <TaglineAndImage /> */}
-      {/* <Topics /> */}
-      {/* <Reviews />
-      <Features />
-      <SubTopics />
-      <FAQs />
-      <BlogsAndArticles /> */}
-      <Footer />
     </div>
   );
 };

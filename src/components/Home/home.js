@@ -4,6 +4,7 @@ import Footer from '../LandingPageComponents/Footer';
 import { FaUser, FaCog, FaSignOutAlt, FaHome } from "react-icons/fa";
 import { ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import NGODashboard from '../NGOPage/ngoPage';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,7 @@ const Navbar = () => {
                 <div className="flex items-center ml-8">
                     <div className="text-black font-bold text-3xl flex items-center">
 
-                        Structify
+                        Savor & Serve
                     </div>
                     <div className="flex ml-24">
                         <a href="/home" className="text-black font-bold text-xl flex items-center relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-black after:left-0 after:bottom-[-2px] after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100">
@@ -132,24 +133,8 @@ const HomePage = () => {
             <div className="container mx-auto px-4 py-8">
                 <h1 className="text-3xl font-bold mb-8">Welcome {localStorage.getItem("userFullName")}</h1>
                 <div className="flex flex-wrap justify-center gap-8">
-                    <Card
-                        title="Linked List"
-                        description="A linear data structure where elements are stored in nodes."
-                        topics={['Insertion', 'Deletion', 'Traversal']}
-                        logoSrc="/link.svg"
-                    />
-                    <Card
-                        title="Stacks"
-                        description="Last-In-First-Out (LIFO) data structure for temporary data storage."
-                        topics={['Push operation', 'Pop operation', 'Peek operation']}
-                        logoSrc="/stack.svg"
-                    />
-                    <Card
-                        title="Queues"
-                        description="First-In-First-Out (FIFO) data structure for ordered data processing."
-                        topics={['Enqueue operation', 'Dequeue operation', 'Search Queue']}
-                        logoSrc="/queue1.svg"
-                    />
+                 
+                <NGODashboard/>
                 </div>
             </div>
             <Footer />
