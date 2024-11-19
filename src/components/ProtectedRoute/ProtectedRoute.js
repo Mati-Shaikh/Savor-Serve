@@ -1,40 +1,55 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode'; // Adjust import if needed
 
 const ProtectedRoute = ({ element: Component, ...rest }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null); // Null initially while verifying
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
     const verifyToken = async () => {
       const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId');
-      const userFullName = localStorage.getItem('userFullName');
 
-      if (!token || !userId || !userFullName) {
+      if (!token) {
         setIsAuthenticated(false);
         return;
       }
 
       try {
-        // Call your backend to verify the token along with userId and userFullName
+        // Decode and verify token expiration
+        const decodedToken = jwtDecode(token);
+        if (decodedToken.exp * 1000 < Date.now()) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          localStorage.removeItem('userFullName');
+          setIsAuthenticated(false);
+          return;
+        }
+
+        const userId = localStorage.getItem('userId');
+        const userFullName = localStorage.getItem('userFullName');
+
+        if (!userId || !userFullName) {
+          setIsAuthenticated(false);
+          return;
+        }
+
         const response = await fetch('http://localhost:3005/api/auth/protectedRoute', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-             token: token, // Send token in authorization header
+            token,
           },
-          body: JSON.stringify({ userId, userFullName }), // Send userId and userFullName in the request body
+          body: JSON.stringify({ userId, userFullName }),
         });
 
         if (response.ok) {
           setIsAuthenticated(true);
         } else {
-          localStorage.removeItem('token'); 
-          localStorage.removeItem('userId');
-          localStorage.removeItem('userFullName');
+          localStorage.clear(); // Clear all localStorage on failure
           setIsAuthenticated(false);
         }
       } catch (err) {
+        console.error('Token verification failed:', err);
         setIsAuthenticated(false);
       }
     };
@@ -43,8 +58,8 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
   }, []);
 
   if (isAuthenticated === null) {
-    // You can add a loading spinner here while verifying token
-    return <div>Loading...</div>;
+    // Placeholder for loading spinner
+    return <div className="loading-spinner">Loading...</div>;
   }
 
   return isAuthenticated ? (

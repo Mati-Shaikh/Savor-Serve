@@ -30,12 +30,12 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+  
     const loginData = {
       Email: email,
       Password: password,
     };
-
+  
     try {
       const response = await fetch("http://localhost:3005/api/auth/login", {
         method: "POST",
@@ -44,22 +44,44 @@ const LoginPage = () => {
         },
         body: JSON.stringify(loginData),
       });
-
+  
       if (!response.ok) {
-        throw new Error("Login failed. Please check your credentials.");
+        const errorData = await response.json(); // Get error details from server
+        throw new Error(errorData.message || "Login failed. Please check your credentials.");
       }
-
+  
       const responseData = await response.json();
-      localStorage.setItem("token", responseData.token); // Store JWT token
-      localStorage.setItem("userId", responseData.user._id); // Store user ID
-      localStorage.setItem("userFullName", responseData.user.FullName); // Store full name
-      navigate("/home");
+  
+      // Store user details and token in localStorage
+      localStorage.setItem("token", responseData.token);
+      localStorage.setItem("userId", responseData.user._id);
+      localStorage.setItem("userFullName", responseData.user.FullName);
+      localStorage.setItem("userRole", responseData.user.Role);
+  
+      // Navigate based on user role
+      switch (responseData.user.Role) {
+        case "Donor":
+          navigate("/home");
+          break;
+        case "Admin":
+          navigate("/admin");
+          break;
+        case "NGO":
+          navigate("/ngodashboard");
+          break;
+        case "GroceryShop":
+          navigate("/grocerydashboard");
+          break;
+        default:
+          navigate("/home"); // Fallback navigation
+      }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleGoogleLogin = async () => {
     try {

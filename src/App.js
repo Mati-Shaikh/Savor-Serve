@@ -15,6 +15,8 @@ import FAQs from "./components/FAQsPage/faqsPage";
 import NGO from "./components/NGOPage/ngoPage";
 import GrocerySupplierDashboard from "./components/GroceryDashboard/groceryDashboard";
 import DonorDashboard from "./components/DonorDashboard/donorDasboard";
+import DonateToNGO from './components/Donate/donateToNGOs'
+import DonateToSupplier from "./components/Donate/donateToSupplier";
 
 const App = () => {
   return (
@@ -31,6 +33,8 @@ const App = () => {
         <Route path="/ngo" element={<NGO />} />
         <Route path="/grocerydashboard" element={<GrocerySupplierDashboard/>}/>
         <Route path="/donordashboard" element={<DonorDashboard/>}/>
+        <Route path="/donatetongo" element={<DonateToNGO/>}/>
+        <Route path="/donatetoSupplier" element={<DonateToSupplier/>}/>
 
         <Route
           path="/dashboard"

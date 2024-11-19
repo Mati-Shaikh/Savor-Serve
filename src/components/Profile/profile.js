@@ -12,25 +12,21 @@ import {
   FaSave,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Clear local storage
     localStorage.clear();
-    // navigate to login page
-    navigate("/");
+    navigate("/"); // Redirect to login page
   };
 
   return (
     <nav className="bg-white p-4">
       <div className="container mx-auto flex justify-between">
-        {/* Structify Logo and Home Link */}
         <div className="flex items-center ml-8">
           <div className="text-black font-bold text-3xl flex items-center">
-            Structify
+            Savor and Serve
           </div>
           <div className="flex ml-24">
             <a
@@ -43,7 +39,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Hamburger Menu */}
         <div className="relative">
           <button
             onMouseEnter={() => setIsOpen(true)}
@@ -53,7 +48,6 @@ const Navbar = () => {
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          {/* Dropdown Menu */}
           {isOpen && (
             <div
               className="absolute right-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 animate-fade-in"
@@ -90,22 +84,21 @@ const PersonalInfoPage = () => {
   const [user, setUser] = useState({
     FirstName: "",
     LastName: "",
-    Age: "",
+    PhoneNumber: "",
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3005/api/auth/getProfile",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              token: localStorage.getItem("token"), // Assuming you store token in local storage
-            },
-          }
-        );
+        const response = await fetch("http://localhost:3005/api/donor/profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            token: localStorage.getItem("token"),
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -133,17 +126,14 @@ const PersonalInfoPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        "http://localhost:3005/api/auth/updateProfile",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            token: localStorage.getItem("token"), // Assuming you store token in local storage
-          },
-          body: JSON.stringify(user),
-        }
-      );
+      const response = await fetch("http://localhost:3005/api/donor/profile", {
+        method: "PUT", // Use PUT for updating data
+        headers: {
+          "Content-Type": "application/json",
+          token: localStorage.getItem("token"),
+        },
+        body: JSON.stringify(user),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to update user data");
@@ -167,9 +157,7 @@ const PersonalInfoPage = () => {
       <Navbar />
       <div className="container mx-auto px-4 py-8" style={{ width: "60%" }}>
         <h1 className="text-2xl font-bold mb-6">Personal info</h1>
-        <div>
-          <hr style={{ border: "0.5px solid black" }} />
-        </div>
+        <hr style={{ border: "0.5px solid black" }} />
         <div className="bg-white rounded p-6">
           <form onSubmit={handleSubmit}>
             <div className="flex flex-wrap -mx-3 mb-6">
@@ -211,16 +199,16 @@ const PersonalInfoPage = () => {
             <div className="mb-6">
               <label
                 className="block text-gray-700 text-sm font-semibold mb-2"
-                htmlFor="Age"
+                htmlFor="PhoneNumber"
               >
-                Age <span className="text-red-500">*</span>
+                PhoneNumber <span className="text-red-500">*</span>
               </label>
               <input
                 className="shadow appearance-none border rounded-full w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="Age"
-                type="number"
-                name="Age"
-                value={user.Age}
+                id="PhoneNumber"
+                type="text"
+                name="PhoneNumber"
+                value={user.PhoneNumber}
                 onChange={handleInputChange}
                 required
               />

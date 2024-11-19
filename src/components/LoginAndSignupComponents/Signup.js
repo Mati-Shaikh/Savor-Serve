@@ -15,42 +15,67 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null); // Clear previous error messages
+    setSuccess(false); // Reset success state
+  
     const data = {
       FirstName: firstName,
       LastName: lastName,
       Email: email,
       Password: password,
       PhoneNumber: phoneNumber,
-      Role: role,  // Include role in the data to be sent to the backend
+      Role: role, // Include role in the data to be sent to the backend
     };
-
+  
     try {
-      const response = await fetch('http://localhost:3005/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3005/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
-
+  
+      // Parse response data
+      const responseData = await response.json();
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || 'An error occurred');
-        setSuccess(false);
-      } else {
-        const responseData = await response.json();
-        localStorage.setItem('token', responseData.token);  // Store JWT token
-        localStorage.setItem('userId', responseData.user._id);  // Store user ID
-        localStorage.setItem('userFullName', responseData.user.FullName);  // Store full name
-        navigate('/home')
-        setError(null);
-        setSuccess(true);
+        // Set error message from the response or use a default message
+        throw new Error(responseData.message || "Registration failed. Please try again.");
       }
+  
+      // Store user details and token in localStorage
+      localStorage.setItem("token", responseData.token);
+      localStorage.setItem("userId", responseData.user._id);
+      localStorage.setItem("userFullName", responseData.user.FullName);
+  
+      // Navigate based on user role
+      const userRole = responseData.user.Role;
+      switch (userRole) {
+        case "Donor":
+          navigate("/home");
+          break;
+        case "Admin":
+          navigate("/admin");
+          break;
+        case "NGO":
+          navigate("/ngodashboard");
+          break;
+        case "GroceryShop":
+          navigate("/grocerydashboard");
+          break;
+        default:
+          navigate("/home"); // Default fallback
+      }
+  
+      // Set success state
+      setSuccess(true);
     } catch (err) {
-      setError('Failed to connect to the server');
-      setSuccess(false);
+      // Handle and display errors
+      setError(err.message || "Failed to connect to the server. Please try again.");
     }
   };
+  
 
   return (
     <div className="flex min-h-screen bg-white">
