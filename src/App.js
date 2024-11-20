@@ -17,6 +17,7 @@ import GrocerySupplierDashboard from "./components/GroceryDashboard/groceryDashb
 import DonorDashboard from "./components/DonorDashboard/donorDasboard";
 import DonateToNGO from './components/Donate/donateToNGOs'
 import DonateToSupplier from "./components/Donate/donateToSupplier";
+import AdminDashboard from "./components/AdminDashboard/adminDashboard"
 
 const App = () => {
   return (
@@ -25,12 +26,15 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        
+        <Route path="/adminDashboard" element={<AdminDashboard />} />
+
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/faqs" element={<FAQs />} />
-        <Route path="/ngo" element={<NGO />} />
+        <Route path="/ngodashboard" element={<NGO />} />
         <Route path="/grocerydashboard" element={<GrocerySupplierDashboard/>}/>
         <Route path="/donordashboard" element={<DonorDashboard/>}/>
         <Route path="/donatetongo" element={<DonateToNGO/>}/>
