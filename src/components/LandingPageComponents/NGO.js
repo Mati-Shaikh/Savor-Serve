@@ -1,543 +1,246 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import {
-  Users,
-  BookOpen,
-  Activity,
-  Coffee,
-  Globe,
-  CreditCard,
+import React, { useState, useEffect } from 'react';
+import { 
+  BarChart, Bar, XAxis, YAxis, Pie, PieChart, Cell, 
+  ResponsiveContainer, Tooltip, Legend 
+} from 'recharts';
+import { 
+  Users, 
+  Package2, 
+  Target, 
+  Home, 
+  Plus, 
+  UserPlus,
   FileText,
-  Check,
-  Plus,
-  ChevronDown,
-} from "lucide-react";
+  Box
+} from 'lucide-react';
+import AddImpacteeForm from './AddImpacteeForm';
+import AddPackageForm from './AddPackageForm';
 
 const NGODashboard = () => {
-  // Function to fetch token from localStorage
-  const getToken = () => localStorage.getItem("token") || "";
+  const [activeTab, setActiveTab] = useState('overview');
+  const [ngoData, setNgoData] = useState(null);
+  const [impactees, setImpactees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedSection, setSelectedSection] = useState('view');
+  const [totalDonations, setTotalDonations] = useState(0);
 
-  // State for managing active tab
-  const [activeTab, setActiveTab] = useState("profile");
-  const [ngoId, setNgoId] = useState(null); // Will update after registration
-  const [token, setToken] = useState(getToken()); // Initialize token
-
-  // NGO Profile State
-  const [ngoProfile, setNgoProfile] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    description: "",
-    website: "",
-  });
-
-  // Causes State
-  const [causes, setCauses] = useState([]);
-  const [newCause, setNewCause] = useState({
-    title: "",
-    description: "",
-    goal: "",
-    timeline: "",
-  });
-
-  // Packages State
-  const [newPackage, setNewPackage] = useState({
-    title: "",
-    description: "",
-    price: "",
-  });
-
-  // Tabs Configuration
-  const tabs = [
-    { id: "profile", icon: <FileText className="h-4 w-4" />, label: "Profile" },
-    { id: "causes", icon: <BookOpen className="h-4 w-4" />, label: "Causes" },
-    { id: "impactees", icon: <Users className="h-4 w-4" />, label: "Impactees" },
-    { id: "donations", icon: <Activity className="h-4 w-4" />, label: "Donations" },
-    { id: "packages", icon: <Globe className="h-4 w-4" />, label: "Packages" },
-  ];
-
-  // Validate token before making requests
   useEffect(() => {
-    if (!token) {
-      alert("You are not logged in. Please log in again.");
-    }
-  }, [token]);
+    const fetchNGOData = async () => {
+      try {
+        const ngoId = localStorage.getItem('ngoId');
+        const token = localStorage.getItem('token');
 
-  // API Call to Register NGO
-  const handleNGORegistration = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3005/api/ngo/register",
-        {
-          name: ngoProfile.name,
-          registrationNumber: ngoProfile.name.replace(/\s+/g, ""), // Generating a dummy registration number
-          description: ngoProfile.description,
-          address: ngoProfile.address,
-          phone: ngoProfile.phone,
-          website: ngoProfile.website,
-          impactees: [
-            {
-              name: "Initial Impactee",
-              phone: "+1234567890",
-              cnic: "12345",
-            },
-          ],
-        },
-        {
-          headers: { token },
-        }
-      );
+        const [ngoResponse, impacteesResponse, donationsResponse] = await Promise.all([
+          fetch(`http://localhost:3005/api/ngo/getNGO/${ngoId}`, { 
+            headers: { 'token': token } 
+          }),
+          fetch(`http://localhost:3005/api/ngo/getImpactees/${ngoId}/impactees`, { 
+            headers: { 'token': token } 
+          }),
+          fetch('http://localhost:3005/api/ngo/total-donations', {
+            headers: { 'token': token }
+          })
+        ]);
 
-      alert(response.data.message);
-      setNgoId(response.data.ngo._id); // Save the registered NGO ID
-    } catch (error) {
-      console.error("Registration Error:", error);
-      if (error.response) {
-        alert(error.response.data.message || "Registration failed.");
-      } else {
-        alert("Registration failed. Please check your input.");
+        const ngoData = await ngoResponse.json();
+        const impacteesData = await impacteesResponse.json();
+        const donationsData = await donationsResponse.json();
+
+        setNgoData(ngoData.data);
+        setImpactees(Array.isArray(impacteesData) ? impacteesData : []);
+        setTotalDonations(donationsData.totalDonations);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching NGO data:', error);
+        setLoading(false);
       }
-    }
+    };
+
+    fetchNGOData();
+  }, []);
+
+  const renderOverview = () => {
+    const causeData = ngoData?.causes?.map(cause => ({
+      name: cause.title,
+      goal: cause.goal
+    })) || [];
+
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="bg-white shadow-md rounded-lg p-6 flex items-center">
+            <Users className="mr-4 text-blue-500" size={48} />
+            <div>
+              <h3 className="text-xl font-semibold">Total Impactees</h3>
+              <p className="text-2xl font-bold">{impactees.length}</p>
+            </div>
+          </div>
+          <div className="bg-white shadow-md rounded-lg p-6 flex items-center">
+            <Package2 className="mr-4 text-green-500" size={48} />
+            <div>
+              <h3 className="text-xl font-semibold">Total Causes</h3>
+              <p className="text-2xl font-bold">{ngoData?.causes?.length || 0}</p>
+            </div>
+          </div>
+          <div className="bg-white shadow-md rounded-lg p-6 flex items-center">
+            <Target className="mr-4 text-purple-500" size={48} />
+            <div>
+              <h3 className="text-xl font-semibold">Total Goal</h3>
+              <p className="text-2xl font-bold">
+                ${ngoData?.causes?.reduce((sum, cause) => sum + cause.goal, 0) || 0}
+              </p>
+            </div>
+          </div>
+          <div className="bg-white shadow-md rounded-lg p-6 flex items-center">
+            <FileText className="mr-4 text-red-500" size={48} />
+            <div>
+              <h3 className="text-xl font-semibold">Total Donations</h3>
+              <p className="text-2xl font-bold">${totalDonations}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h3 className="text-xl font-semibold mb-4">Causes Distribution</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={causeData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="goal" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h3 className="text-xl font-semibold mb-4">Impactees Breakdown</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'Impactees', value: impactees.length },
+                    { name: 'Remaining', value: Math.max(0, 100 - impactees.length) }
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  <Cell fill="#0088FE" />
+                  <Cell fill="#00C49F" />
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+    );
   };
 
-  // API Call to Update NGO Profile
-  const handleUpdateProfile = async () => {
-    if (!ngoId) {
-      alert("Please register the NGO first.");
-      return;
-    }
+  const renderImpacteesSection = () => (
+    <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Impactees Management</h2>
+        <div className="flex space-x-2">
+          <button 
+            onClick={() => setSelectedSection('view')}
+            className={`px-4 py-2 rounded ${selectedSection === 'view' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            View Impactees
+          </button>
+          <button 
+            onClick={() => setSelectedSection('add')}
+            className={`px-4 py-2 rounded ${selectedSection === 'add' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            Add Impactee
+          </button>
+        </div>
+      </div>
 
-    try {
-      const response = await axios.put(
-        `http://localhost:3005/api/ngo/updateProfile/${ngoId}`,
-        {
-          name: ngoProfile.name,
-          description: ngoProfile.description,
-          address: ngoProfile.address,
-          phone: ngoProfile.phone,
-          website: ngoProfile.website,
-        },
-        {
-          headers: { token },
-        }
-      );
+      {selectedSection === 'view' ? (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-3 text-left">Name</th>
+                <th className="p-3 text-left">Phone</th>
+                <th className="p-3 text-left">CNIC</th>
+              </tr>
+            </thead>
+            <tbody>
+              {impactees.map((impactee, index) => (
+                <tr key={index} className="border-b">
+                  <td className="p-3">{impactee.name}</td>
+                  <td className="p-3">{impactee.phone}</td>
+                  <td className="p-3">{impactee.cnic}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div>
+          <AddImpacteeForm />
+        </div>
+      )}
+    </div>
+  );
 
-      alert(response.data.message);
-    } catch (error) {
-      console.error("Update Profile Error:", error);
-      if (error.response) {
-        alert(error.response.data.message || "Profile update failed.");
-      } else {
-        alert("Profile update failed.");
-      }
-    }
-  };
-
-  // Handling changes in NGO profile form
-  const handleProfileChange = (e) => {
-    const { name, value } = e.target;
-    setNgoProfile((prevProfile) => ({
-      ...prevProfile,
-      [name]: value,
-    }));
-  };
-
-  // API Call to Add Cause
-  const handleAddCause = async () => {
-    try {
-      const response = await axios.post(`http://localhost:3005/api/ngo/addcause/${ngoId}`, {
-        title: newCause.title,
-        description: newCause.description,
-        goal: parseFloat(newCause.goal),
-        timeline: newCause.timeline
-      }, {
-        headers: { token: token }
-      });
-      
-      alert(response.data.message);
-      setCauses([...causes, response.data.data]);
-      setNewCause({ title: '', description: '', goal: '', timeline: '' });
-    } catch (error) {
-      console.error('Add Cause Error:', error);
-      alert('Adding cause failed');
-    }
-  };
-
-  // API Call to Add Package to Cause
-  const handleAddPackage = async (causeId) => {
-    try {
-      const response = await axios.post(`http://localhost:3005/api/ngo/${ngoId}/causes/${causeId}/packages`, {
-        title: newPackage.title,
-        description: newPackage.description,
-        price: parseFloat(newPackage.price)
-      }, {
-        headers: { token: token }
-      });
-      
-      alert(response.data.message);
-      setNewPackage({ title: '', description: '', price: '' });
-    } catch (error) {
-      console.error('Add Package Error:', error);
-      alert('Adding package failed');
-    }
-  };
+  const renderPackagesSection = () => (
+    <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Packages Management</h2>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded flex items-center">
+          <plus className="mr-2" size={20} /> Add Package
+        </button>
+      </div>
+      <AddPackageForm />
+    </div>
+  );
+  // Rest of the component remains the same as in the previous submission
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      {/* Header Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">NGO Dashboard</h1>
-        <p className="text-gray-600">Manage your NGO profile, causes, and impact</p>
-      </div>
-
-      {/* Main Content */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-        {/* Sidebar Stats */}
-        <div className="space-y-4">
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 font-semibold">Quick Stats</h2>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Users className="h-5 w-5 text-blue-500" />
-                <span>Total Impactees: 150</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Activity className="h-5 w-5 text-green-500" />
-                <span>Active Causes: {causes.length}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CreditCard className="h-5 w-5 text-purple-500" />
-                <span>Total Donations: $25,000</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="lg:col-span-3">
-          {/* Custom Tabs */}
-          <div className="mb-6">
-            <div className="flex space-x-4 border-b">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 border-b-2 px-4 py-2 ${
-                    activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  {tab.icon}
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Tab Content */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            {/* Profile Tab */}
-            {activeTab === 'profile' && (
-             <div>
-             <h2 className="mb-6 text-xl font-semibold">NGO Profile</h2>
-             <form className="space-y-4">
-               <div className="grid grid-cols-2 gap-4">
-                 <div className="space-y-2">
-                   <label className="text-sm font-medium">NGO Name</label>
-                   <input
-                     type="text"
-                     value={ngoProfile.name}
-                     onChange={(e) => setNgoProfile({ ...ngoProfile, name: e.target.value })}
-                     className="w-full rounded-md border p-2"
-                     placeholder="Enter NGO name"
-                   />
-                 </div>
-                 <div className="space-y-2">
-                   <label className="text-sm font-medium">Phone</label>
-                   <input
-                     type="text"
-                     value={ngoProfile.phone}
-                     onChange={(e) => setNgoProfile({ ...ngoProfile, phone: e.target.value })}
-                     className="w-full rounded-md border p-2"
-                     placeholder="Enter phone number"
-                   />
-                 </div>
-               </div>
-               <div className="grid grid-cols-2 gap-4">
-                 <div className="space-y-2">
-                   <label className="text-sm font-medium">Address</label>
-                   <input
-                     type="text"
-                     value={ngoProfile.address}
-                     onChange={(e) => setNgoProfile({ ...ngoProfile, address: e.target.value })}
-                     className="w-full rounded-md border p-2"
-                     placeholder="Enter address"
-                   />
-                 </div>
-                 <div className="space-y-2">
-                   <label className="text-sm font-medium">Website</label>
-                   <input
-                     type="text"
-                     value={ngoProfile.website}
-                     onChange={(e) => setNgoProfile({ ...ngoProfile, website: e.target.value })}
-                     className="w-full rounded-md border p-2"
-                     placeholder="Enter website"
-                   />
-                 </div>
-               </div>
-               <div className="space-y-2">
-                 <label className="text-sm font-medium">Description</label>
-                 <textarea
-                   value={ngoProfile.description}
-                   onChange={(e) => setNgoProfile({ ...ngoProfile, description: e.target.value })}
-                   className="w-full rounded-md border p-2"
-                   rows="4"
-                   placeholder="Describe your NGO"
-                 />
-               </div>
-               <div className="flex space-x-4">
-                 <button
-                   type="button"
-                   onClick={handleNGORegistration}
-                   className="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-                 >
-                   Register NGO
-                 </button>
-                 <button
-                   type="button"
-                   onClick={handleUpdateProfile}
-                   className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                 >
-                   Update Profile
-                 </button>
-               </div>
-             </form>
-           </div>
-            )}
-
-            {/* Causes Tab */}
-            {activeTab === 'causes' && (
-              <div>
-                <div className="mb-6 flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">Active Causes</h2>
-                  <div className="flex space-x-4">
-                    {/* Add Cause Form */}
-                    <div className="flex space-x-2">
-                      <input 
-                        type="text"
-                        value={newCause.title}
-                        onChange={(e) => setNewCause({...newCause, title: e.target.value})}
-                        placeholder="Cause Title"
-                        className="rounded-md border p-2"
-                      />
-                      <input 
-                        type="number"
-                        value={newCause.goal}
-                        onChange={(e) => setNewCause({...newCause, goal: e.target.value})}
-                        placeholder="Goal Amount"
-                        className="rounded-md border p-2"
-                      />
-                      <input 
-                        type="date"
-                        value={newCause.timeline}
-                        onChange={(e) => setNewCause({...newCause, timeline: e.target.value})}
-                        className="rounded-md border p-2"
-                      />
-                      <button 
-                        onClick={handleAddCause}
-                        className="flex items-center space-x-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-                      >
-                        <Plus className="h-4 w-4" />
-                        <span>Add Cause</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {causes.map((cause, index) => (
-                    <div key={index} className="rounded-lg border p-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold">{cause.title}</h3>
-                        <span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-800">
-                          Active
-                        </span>
-                      </div>
-                      <p className="mt-2 text-sm text-gray-600">
-                        {cause.description}
-                      </p>
-                      <div className="mt-4 flex items-center justify-between">
-                        <div className="text-sm text-gray-600">
-                          Goal: ${cause.goal}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          Timeline: {new Date(cause.timeline).toLocaleDateString()}
-                        </div>
-                      </div>
-                      {/* Add Package Section */}
-                      <div className="mt-4 flex space-x-2">
-                        <input 
-                          type="text"
-                          value={newPackage.title}
-                          onChange={(e) => setNewPackage({...newPackage, title: e.target.value})}
-                          placeholder="Package Title"
-                          className="rounded-md border p-2"
-                        />
-                        <input 
-                          type="number"
-                          value={newPackage.price}
-                          onChange={(e) => setNewPackage({...newPackage, price: e.target.value})}
-                          placeholder="Package Price"
-                          className="rounded-md border p-2"
-                        />
-                        <button 
-                          onClick={() => handleAddPackage(cause._id)}
-                          className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                        >
-                          Add Package
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Feature Cards */}
-      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-lg bg-white p-6 shadow">
-          <div className="mb-4 flex items-center space-x-2">
-            <BookOpen className="h-5 w-5 text-red-500" />
-            <h3 className="font-semibold">Systems Approach</h3>
-          </div>
-          
-          
-        </div>
-
-        <div className="rounded-lg bg-white p-6 shadow">
-          <div className="mb-4 flex items-center space-x-2">
-            <Users className="h-5 w-5 text-blue-500" />
-            <h3 className="font-semibold">Community Impact</h3>
-          </div>
-          <p className="text-gray-600">
-            Create and track meaningful impact in communities
-          </p>
-        </div>
-
-        <div className="rounded-lg bg-white p-6 shadow">
-          <div className="mb-4 flex items-center space-x-2">
-            <Coffee className="h-5 w-5 text-yellow-500" />
-            <h3 className="font-semibold">Motivation System</h3>
-          </div>
-          <p className="text-gray-600">
-            Engage and motivate donors through transparent impact tracking
-          </p>
-        </div>
-      </div>
-
-      {/* Modal for Add Impactees (if needed) */}
-      {activeTab === 'impactees' && (
-        <div className="mt-6 rounded-lg bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold">Impactees Management</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Impactee Name</label>
-              <input 
-                type="text"
-                className="w-full rounded-md border p-2"
-                placeholder="Enter impactee name"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Phone Number</label>
-              <input 
-                type="text"
-                className="w-full rounded-md border p-2"
-                placeholder="Enter phone number"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">CNIC</label>
-              <input 
-                type="text"
-                className="w-full rounded-md border p-2"
-                placeholder="Enter CNIC number"
-              />
-            </div>
-            <div className="flex items-end">
-              <button className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-                Add Impactee
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Donations Tab */}
-      {activeTab === 'donations' && (
-        <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="mb-6 text-xl font-semibold">Donation Tracking</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="p-3 text-left">Donor Name</th>
-                  <th className="p-3 text-left">Amount</th>
-                  <th className="p-3 text-left">Date</th>
-                  <th className="p-3 text-left">Cause</th>
-                  <th className="p-3 text-left">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Sample Donation Entries */}
-                <tr className="border-b">
-                  <td className="p-3">John Doe</td>
-                  <td className="p-3">$500</td>
-                  <td className="p-3">2024-01-15</td>
-                  <td className="p-3">Clean Water Initiative</td>
-                  <td className="p-3">
-                    <span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-800">
-                      Completed
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Packages Tab */}
-      {activeTab === 'packages' && (
-        <div className="rounded-lg bg-white p-6 shadow">
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Available Packages</h2>
-            <button className="flex items-center space-x-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700">
-              <Plus className="h-4 w-4" />
-              <span>Create New Package</span>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-2 bg-white shadow-md rounded-lg p-4">
+          <div className="space-y-2">
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className={`w-full flex items-center p-3 rounded ${activeTab === 'overview' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+            >
+              <Home className="mr-3" size={20} /> Dashboard
+            </button>
+            <button 
+              onClick={() => setActiveTab('impactees')}
+              className={`w-full flex items-center p-3 rounded ${activeTab === 'impactees' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+            >
+              <Users className="mr-3" size={20} /> Impactees
+            </button>
+            <button 
+              onClick={() => setActiveTab('packages')}
+              className={`w-full flex items-center p-3 rounded ${activeTab === 'packages' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+            >
+              <Package2 className="mr-3" size={20} /> Packages
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Sample Package Cards */}
-            <div className="rounded-lg border p-4 shadow-sm">
-              <h3 className="font-semibold mb-2">Health Support Package</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Comprehensive health support for children
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="font-bold text-blue-600">$250</span>
-                <button className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600">
-                  Details
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
-      )}
+        <div className="col-span-10">
+          {loading ? (
+            <div className="text-center text-xl mt-10">Loading...</div>
+          ) : (
+            <>
+              {activeTab === 'overview' && renderOverview()}
+              {activeTab === 'impactees' && renderImpacteesSection()}
+              {activeTab === 'packages' && renderPackagesSection()}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

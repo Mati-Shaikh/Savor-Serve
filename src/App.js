@@ -18,6 +18,8 @@ import DonorDashboard from "./components/DonorDashboard/donorDasboard";
 import DonateToNGO from './components/Donate/donateToNGOs'
 import DonateToSupplier from "./components/Donate/donateToSupplier";
 import AdminDashboard from "./components/AdminDashboard/adminDashboard"
+import NGORegistrationForm from "./components/NgoRegisteration/ngoProfile";
+import AddCauseForm from "./components/NgoRegisteration/addCause";
 
 const App = () => {
   return (
@@ -34,6 +36,11 @@ const App = () => {
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/faqs" element={<FAQs />} />
+
+        <Route path="/ngoRegister" element={<NGORegistrationForm />} />
+        <Route path="/addCause" element={<AddCauseForm />} />
+
+
         <Route path="/ngodashboard" element={<NGO />} />
         <Route path="/grocerydashboard" element={<GrocerySupplierDashboard/>}/>
         <Route path="/donordashboard" element={<DonorDashboard/>}/>

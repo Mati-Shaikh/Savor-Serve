@@ -59,7 +59,7 @@ const SignupPage = () => {
           navigate("/admin");
           break;
         case "NGO":
-          navigate("/ngodashboard");
+          navigate("/ngoRegister");
           break;
         case "GroceryShop":
           navigate("/grocerydashboard");
