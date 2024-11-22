@@ -97,30 +97,62 @@ const NGODashboard = () => {
   const [selectedSection, setSelectedSection] = useState('view');
   const [totalDonations, setTotalDonations] = useState(0);
 
+
+  // Fetch Impactees data from API
+  const fetchImpactees = async () => {
+    try {
+      setLoading(true); // Start loading
+      const token = localStorage.getItem('token'); // Retrieve token from localStorage
+      const response = await fetch('http://localhost:3005/api/ngo/getImpactees', {
+        method: 'GET',
+        headers: {
+          token:token, // Send token in Authorization header
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch impactees');
+      }
+
+      const data = await response.json();
+      console.log(data.impactees);
+
+      setImpactees(data.impactees); // Update state with the retrieved data
+    } catch (error) {
+      console.error('Error fetching impactees:', error);
+      // Handle the error (e.g., show error message)
+    } finally {
+      setLoading(false); // End loading
+    }
+  };
+
+  // Fetch impactee data when the component mounts
+  useEffect(() => {
+    fetchImpactees();
+  }, []); 
+
   useEffect(() => {
     const fetchNGOData = async () => {
       try {
-        const ngoId = localStorage.getItem('ngoId');
         const token = localStorage.getItem('token');
 
-        const [ngoResponse, impacteesResponse, donationsResponse] = await Promise.all([
-          fetch(`http://localhost:3005/api/ngo/getNGO/${ngoId}`, { 
+        const [ngoResponse, donationsResponse] = await Promise.all([
+          fetch(`http://localhost:3005/api/ngo/getNGO`, { 
             headers: { 'token': token } 
           }),
-          fetch(`http://localhost:3005/api/ngo/getImpactees/${ngoId}/impactees`, { 
-            headers: { 'token': token } 
-          }),
+          
           fetch('http://localhost:3005/api/ngo/total-donations', {
             headers: { 'token': token }
           })
         ]);
 
         const ngoData = await ngoResponse.json();
-        const impacteesData = await impacteesResponse.json();
+        //console.log('My NGo' + ngoData);
+        //const impacteesData = await impacteesResponse.json();
         const donationsData = await donationsResponse.json();
 
         setNgoData(ngoData.data);
-        setImpactees(Array.isArray(impacteesData) ? impacteesData : []);
+        //setImpactees(Array.isArray(impacteesData) ? impacteesData : []);
         setTotalDonations(donationsData.totalDonations);
         setLoading(false);
       } catch (error) {
@@ -215,6 +247,80 @@ const NGODashboard = () => {
     );
   };
 
+  
+  const RenderNGODetails = () => {
+    return (
+      <div className="w-full max-w-4xl mx-auto mt-6 bg-white shadow-md rounded-lg p-6 sm:p-8">
+        {/* NGO Name and Logo */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center space-x-4">
+            <img src="https://via.placeholder.com/50" alt="LucidReact Logo" className="w-12 h-12 rounded-full" />
+            <h2 className="text-2xl font-bold text-gray-800">{ngoData.name}</h2>
+          </div>
+          <a
+            href={ngoData.website}
+            className="text-blue-500 hover:underline text-lg font-semibold"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Visit Website
+          </a>
+        </div>
+  
+        {/* NGO Information Section */}
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">NGO Information</h3>
+          <p className="text-gray-600">Registration Number: {ngoData.registrationNumber}</p>
+          <p className="text-gray-600">Description: {ngoData.description}</p>
+          <p className="text-gray-600">Address: {ngoData.address}</p>
+          <p className="text-gray-600">Phone: {ngoData.phone}</p>
+          <p className="text-gray-600">
+            Website: <a href={ngoData.website} className="text-blue-500 hover:underline">{ngoData.website}</a>
+          </p>
+        </div>
+  
+        {/* Causes Section */}
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">Causes</h3>
+          {ngoData.causes.map(cause => (
+            <div key={cause._id} className="mb-4 p-4 bg-gray-50 rounded-lg shadow-sm">
+              <h4 className="text-lg font-semibold text-gray-700">{cause.title}</h4>
+              <p className="text-gray-600">{cause.description}</p>
+              <p className="text-gray-600">Goal: {cause.goal}</p>
+              <p className="text-gray-600">Timeline: {new Date(cause.timeline).toLocaleDateString()}</p>
+              <h5 className="font-semibold text-gray-700 mt-2">Packages:</h5>
+              {cause.packages.map(packageItem => (
+                <div key={packageItem._id} className="mb-2 p-2 bg-gray-100 rounded-md">
+                  <p className="text-gray-600">Title: {packageItem.title}</p>
+                  <p className="text-gray-600">Description: {packageItem.description}</p>
+                  <p className="text-gray-600">Price: ${packageItem.price}</p>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+  
+        {/* Impactees Section */}
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">Impactees</h3>
+          {ngoData.impactees.length > 0 ? (
+            ngoData.impactees.map(impactee => (
+              <div key={impactee._id} className="mb-2 p-4 bg-gray-50 rounded-lg shadow-sm">
+                <p className="text-gray-600">Name: {impactee.name}</p>
+                <p className="text-gray-600">Phone: {impactee.phone}</p>
+                <p className="text-gray-600">CNIC: {impactee.cnic}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-600">No impactees available.</p>
+          )}
+        </div>
+      </div>
+    );
+  };
+  
+  
+
   const renderImpacteesSection = () => (
     <div className="bg-white shadow-md rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
@@ -237,32 +343,44 @@ const NGODashboard = () => {
 
       {selectedSection === 'view' ? (
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="p-3 text-left">Name</th>
-                <th className="p-3 text-left">Phone</th>
-                <th className="p-3 text-left">CNIC</th>
-              </tr>
-            </thead>
-            <tbody>
-              {impactees.map((impactee, index) => (
-                <tr key={index} className="border-b">
-                  <td className="p-3">{impactee.name}</td>
-                  <td className="p-3">{impactee.phone}</td>
-                  <td className="p-3">{impactee.cnic}</td>
+          {loading ? (
+            <div className="text-center py-4">Loading...</div>
+          ) : (
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="p-3 text-left">Name</th>
+                  <th className="p-3 text-left">Phone</th>
+                  <th className="p-3 text-left">CNIC</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {impactees.length > 0 ? (
+                  impactees.map((impactee, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="p-3">{impactee.name}</td>
+                      <td className="p-3">{impactee.phone}</td>
+                      <td className="p-3">{impactee.cnic}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="p-3 text-center">No impactees found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       ) : (
         <div>
-          <AddImpacteeForm />
+          <AddImpacteeForm onAddImpactee={fetchImpactees} />
         </div>
       )}
     </div>
   );
+
+  //see 
 
   const renderPackagesSection = () => (
     <div className="bg-white shadow-md rounded-lg p-6">
@@ -304,8 +422,8 @@ const NGODashboard = () => {
               <Package2 className="mr-3" size={20} /> Packages
             </button>
             <button 
-              onClick={() => setActiveTab('packages')}
-              className={`w-full flex items-center p-3 rounded ${activeTab === 'packages' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+              onClick={() => setActiveTab('ngoDetails')}
+              className={`w-full flex items-center p-3 rounded ${activeTab === 'ngoDetails' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
             >
               <Package2 className="mr-3" size={20} /> View NGO
             </button>
@@ -319,6 +437,7 @@ const NGODashboard = () => {
               {activeTab === 'overview' && renderOverview()}
               {activeTab === 'impactees' && renderImpacteesSection()}
               {activeTab === 'packages' && renderPackagesSection()}
+              {activeTab === 'ngoDetails' && RenderNGODetails()}
             </>
           )}
         </div>

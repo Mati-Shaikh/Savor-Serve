@@ -87,19 +87,8 @@ const AddCauseForm = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [addedCauseDetails, setAddedCauseDetails] = useState(null);
 
-  // Retrieve NGO ID from local storage
-  const [ngoId, setNgoId] = useState(null);
 
-  useEffect(() => {
-    // Retrieve NGO ID when component mounts
-    const storedNgoId = localStorage.getItem('ngoId');
-    if (storedNgoId) {
-      setNgoId(storedNgoId);
-    } else {
-      // Handle case where NGO ID is not found
-      alert('Please register an NGO first');
-    }
-  }, []);
+  
 
   // Validation function
   const validateForm = () => {
@@ -177,9 +166,7 @@ const AddCauseForm = () => {
       }
 
       // Ensure we have an NGO ID
-      if (!ngoId) {
-        throw new Error("No NGO ID found. Please register an NGO first.");
-      }
+     
 
       const requestBody = {
         title: newCause.title,
@@ -188,7 +175,7 @@ const AddCauseForm = () => {
         timeline: newCause.timeline
       };
 
-      const response = await fetch(`http://localhost:3005/api/ngo/addcause/${ngoId}`, {
+      const response = await fetch(`http://localhost:3005/api/ngo/addcause`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

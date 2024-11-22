@@ -23,7 +23,7 @@ const AddPackageForm = () => {
         price: parseFloat(newPackage.price)
       };
 
-      const response = await fetch(`http://localhost:3005/api/ngo/${ngoId}/causes/${causeId}/packages`, {
+      const response = await fetch(`http://localhost:3005/api/ngo/addPackage`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

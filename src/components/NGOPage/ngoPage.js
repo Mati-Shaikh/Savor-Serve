@@ -4,7 +4,7 @@ import Footer from "../LandingPageComponents/Footer";
 import NGO from "../LandingPageComponents/NGO";
 
 
-const ContactPage = () => {
+const NGOPage = () => {
   return (
     <div>
       <NGO/>
@@ -12,4 +12,4 @@ const ContactPage = () => {
   );
 };
 
-export default ContactPage;
+export default NGOPage;

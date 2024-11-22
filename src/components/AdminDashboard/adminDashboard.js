@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Modal from "./needyModal";
+import axios from "axios";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { 
   Users, 
@@ -392,6 +394,203 @@ const AdminDashboard = () => {
       </ResponsiveContainer>
     );
   };
+  const [needyIndividuals, setNeedyIndividuals] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentIndividual, setCurrentIndividual] = useState(null);
+    const [needyformData, setNeedyformData] = useState({
+      name: "",
+      address: "",
+      contactNumber: "",
+    });
+    
+
+    
+    const renderNeedyIndividualsList = () => {
+      
+    
+      const token = localStorage.getItem('token');
+    
+   
+    
+      const fetchNeedyIndividuals = async () => {
+        try {
+          const response = await axios.get("http://localhost:3005/api/needyInd/needy", {
+            headers: { token },
+          });
+          setNeedyIndividuals(response.data);
+        } catch (error) {
+          console.error("Error fetching needy individuals:", error.message);
+        }
+      };
+    
+      const handleSave = async (e) => {
+        e.preventDefault();
+        try {
+          if (currentIndividual) {
+            await axios.put(
+              `http://localhost:3005/api/needyInd/needy/${currentIndividual._id}`,
+              needyformData,
+              { headers: { token } }
+            );
+          } else {
+            await axios.post("http://localhost:3005/api/needyInd/needy", 
+              needyformData,
+              { headers: { token } }
+            );
+          }
+          fetchNeedyIndividuals();
+          handleCloseForm();
+        } catch (error) {
+          console.error("Error saving individual:", error.message);
+        }
+      };
+    
+      const handleDelete = async (id) => {
+        try {
+          await axios.delete(`http://localhost:3005/api/needyInd/needy/${id}`, {
+            headers: { token },
+          });
+          fetchNeedyIndividuals();
+        } catch (error) {
+          console.error("Error deleting individual:", error.message);
+        }
+      };
+    
+      const handleOpenForm = (individual = null) => {
+        setCurrentIndividual(individual);
+        setNeedyformData(
+          individual
+            ? {
+                name: individual.name,
+                address: individual.address,
+                contactNumber: individual.contactNumber,
+              }
+            : { name: "", address: "", contactNumber: "" }
+        );
+        setIsFormOpen(true);
+      };
+    
+      const handleCloseForm = () => {
+        setIsFormOpen(false);
+        setCurrentIndividual(null);
+        setNeedyformData({ name: "", address: "", contactNumber: "" });
+      };
+    
+      return (
+        <div className="bg-white shadow-md rounded-lg p-4 mt-4">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold">Needy Individuals</h2>
+            <button
+              onClick={() => handleOpenForm()}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            >
+              Add Needy Individual
+            </button>
+          </div>
+    
+          {/* Form Section */}
+          {isFormOpen && (
+            <div className="mb-6 bg-gray-50 p-4 rounded-lg border">
+              <h3 className="text-lg font-semibold mb-4">
+                {currentIndividual ? "Edit Needy Individual" : "Add Needy Individual"}
+              </h3>
+              <form onSubmit={handleSave} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name</label>
+                  <input
+                    type="text"
+                    value={needyformData.name}
+                    onChange={(e) => setNeedyformData({ ...needyformData, name: e.target.value })}
+                    className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Address</label>
+                  <input
+                    type="text"
+                    value={needyformData.address}
+                    onChange={(e) => setNeedyformData({ ...needyformData, address: e.target.value })}
+                    className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Contact Number</label>
+                  <input
+                    type="text"
+                    value={needyformData.contactNumber}
+                    onChange={(e) => setNeedyformData({ ...needyformData, contactNumber: e.target.value })}
+                    className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div className="flex justify-end space-x-3">
+                  <button
+                    type="button"
+                    onClick={handleCloseForm}
+                    className="px-4 py-2 border rounded-lg hover:bg-gray-100"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+    
+          {/* Table Section */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border p-2 text-left">Name</th>
+                  <th className="border p-2 text-left">Address</th>
+                  <th className="border p-2 text-left">Contact Number</th>
+                  <th className="border p-2 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {needyIndividuals.map((individual) => (
+                  <tr key={individual._id} className="border-b hover:bg-gray-50">
+                    <td className="border p-2">{individual.name}</td>
+                    <td className="border p-2">{individual.address}</td>
+                    <td className="border p-2">{individual.contactNumber}</td>
+                    <td className="border p-2">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleOpenForm(individual)}
+                          className="text-blue-500 hover:bg-blue-100 p-1 rounded"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(individual._id)}
+                          className="text-red-500 hover:bg-red-100 p-1 rounded"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    };
+
+    useEffect(() => {
+      renderNeedyIndividualsList();
+    }, []);
+    
 
   const renderUsersList = (users, title, type) => (
     <div className="bg-white shadow-md rounded-lg p-4 mt-4">
@@ -626,6 +825,8 @@ const AdminDashboard = () => {
         return renderNGOsList();
       case 'suppliers':
         return renderSuppliersList();
+        case 'needy':
+          return renderNeedyIndividualsList();
         case 'donors':
             return renderUsersList(donors, 'Donors List', 'donor');
       default:
@@ -645,7 +846,8 @@ const AdminDashboard = () => {
             { name: 'Dashboard', icon: <BarChart2 />, tab: 'dashboard' },
             { name: 'Donors', icon: <Users />, tab: 'donors' },
             { name: 'NGOs', icon: <Home />, tab: 'ngos' },
-            { name: 'Suppliers', icon: <ShoppingBag />, tab: 'suppliers' }
+            { name: 'Suppliers', icon: <ShoppingBag />, tab: 'suppliers' },
+            { name: 'Needy Individuals', icon: <ShoppingBag />, tab: 'needy' }
           ].map((item) => (
             <button
               key={item.tab}

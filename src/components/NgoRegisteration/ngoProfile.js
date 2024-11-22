@@ -27,15 +27,6 @@ import {
             <div className="text-black font-bold text-3xl flex items-center">
               Savor and Serve
             </div>
-            {/* <div className="flex ml-24">
-              <a
-                href="/home"
-                className="text-black font-bold text-xl flex items-center relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-black after:left-0 after:bottom-[-2px] after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100"
-              >
-                <FaHome className="mr-2" />
-                Home
-              </a>
-            </div> */}
           </div>
   
           <div className="relative">
@@ -179,7 +170,7 @@ const NGORegistrationForm = () => {
           {
             name: "Initial Impactee",
             phone: "+1234567890",
-            cnic: "101",
+            cnic: "804",
           },
         ],
       };

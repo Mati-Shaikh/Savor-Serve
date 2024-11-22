@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const AddImpacteeForm = () => {
+const AddImpacteeForm = ({ onAddImpactee }) => { // Accepting onAddImpactee from parent
   const [impactee, setImpactee] = useState({
     name: '',
     phone: '',
@@ -10,14 +10,13 @@ const AddImpacteeForm = () => {
   const handleAddImpactee = async () => {
     try {
       const token = localStorage.getItem("token");
-      const ngoId = localStorage.getItem("ngoId");
 
       if (!token) {
         alert("Token is missing. Please log in again.");
         return;
       }
 
-      const response = await fetch(`http://localhost:3005/api/ngo/addimpactee/${ngoId}/impactees`, {
+      const response = await fetch(`http://localhost:3005/api/ngo/addimpactee`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,8 +32,13 @@ const AddImpacteeForm = () => {
 
       const data = await response.json();
       alert(data.message);
+
+      // Reset form fields after success
       setImpactee({ name: '', phone: '', cnic: '' });
-      
+
+      // Call the parent callback to fetch impactee data again
+      onAddImpactee(); // Trigger re-fetching of impactee data in parent
+
     } catch (error) {
       console.error('Add Impactee Error:', error);
       alert('Adding impactee failed');
