@@ -67,7 +67,7 @@ const LoginPage = () => {
           navigate("/adminDashboard");
           break;
         case "NGO":
-          navigate("/ngoRegister");
+          navigate("/ngodashboard");
           break;
         case "GroceryShop":
           navigate("/grocerydashboard");

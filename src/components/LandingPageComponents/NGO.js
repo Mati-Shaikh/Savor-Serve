@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
+import { useNavigate } from "react-router-dom";
+import AddImpacteeForm from './AddImpacteeForm';
+import AddPackageForm from './AddPackageForm';
+import Footer from '../LandingPageComponents/Footer';
 import { 
   BarChart, Bar, XAxis, YAxis, Pie, PieChart, Cell, 
   ResponsiveContainer, Tooltip, Legend 
@@ -11,10 +15,79 @@ import {
   Plus, 
   UserPlus,
   FileText,
-  Box
+  Box,
+  X,
+  Menu
 } from 'lucide-react';
-import AddImpacteeForm from './AddImpacteeForm';
-import AddPackageForm from './AddPackageForm';
+
+
+import {
+    FaUser,
+    FaCog,
+    FaSignOutAlt,
+    FaHome,
+    FaEnvelope,
+    FaBirthdayCake,
+    FaSave,
+  } from "react-icons/fa";
+  const Navbar = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
+  
+    const handleLogout = () => {
+      localStorage.clear();
+      navigate("/"); // Redirect to login page
+    };
+  
+    return (
+      <nav className="bg-white p-4">
+        <div className="container mx-auto flex justify-between">
+          <div className="flex items-center ml-8">
+            <div className="text-black font-bold text-3xl flex items-center">
+              Savor and Serve
+            </div>
+          </div>
+  
+          <div className="relative">
+            <button
+              onMouseEnter={() => setIsOpen(true)}
+              onMouseLeave={() => setIsOpen(false)}
+              className="text-black p-2 rounded hover:bg-white transition-colors"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+  
+            {isOpen && (
+              <div
+                className="absolute right-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 animate-fade-in"
+                onMouseEnter={() => setIsOpen(true)}
+                onMouseLeave={() => setIsOpen(false)}
+              >
+                <a
+                  href="/profile"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                  <FaUser className="mr-2" /> Account
+                </a>
+                <a
+                  href="/"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                  <FaCog className="mr-2" /> Settings
+                </a>
+                <a
+                  onClick={handleLogout}
+                  className="cursor-pointer flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                  <FaSignOutAlt className="mr-2" /> Logout
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+    );
+  };
 
 const NGODashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -205,7 +278,10 @@ const NGODashboard = () => {
   // Rest of the component remains the same as in the previous submission
 
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen bg-gray-100 p-6">
+     
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-2 bg-white shadow-md rounded-lg p-4">
           <div className="space-y-2">
@@ -227,6 +303,12 @@ const NGODashboard = () => {
             >
               <Package2 className="mr-3" size={20} /> Packages
             </button>
+            <button 
+              onClick={() => setActiveTab('packages')}
+              className={`w-full flex items-center p-3 rounded ${activeTab === 'packages' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+            >
+              <Package2 className="mr-3" size={20} /> View NGO
+            </button>
           </div>
         </div>
         <div className="col-span-10">
@@ -242,6 +324,8 @@ const NGODashboard = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

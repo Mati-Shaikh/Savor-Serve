@@ -179,7 +179,7 @@ const NGORegistrationForm = () => {
           {
             name: "Initial Impactee",
             phone: "+1234567890",
-            cnic: "789",
+            cnic: "101",
           },
         ],
       };
