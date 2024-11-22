@@ -14,7 +14,8 @@ import {
   Package,
   MapPin,
   Phone,
-  Globe 
+  Globe ,
+  RefreshCcw
 } from 'lucide-react';
 
 // API Service for centralized API calls
@@ -591,6 +592,190 @@ const AdminDashboard = () => {
       renderNeedyIndividualsList();
     }, []);
     
+   
+    const [impactees, setImpactees] = useState([]);
+    const [isModalOpen1, setIsModalOpen1] = useState(false);
+    const [selectedImpactee, setSelectedImpactee] = useState(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState({});
+
+    const fetchImpactees = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get("http://localhost:3005/api/admin/impactees", {
+          headers: { token:token }
+        });
+        console.log(response.data.impactees);
+        setImpactees(response.data.impactees);
+      } catch (error) {
+        console.error("Error fetching impactees:", error.message);
+      }
+    };
+
+    useEffect(() => {
+      fetchImpactees();
+    }, []);
+
+    const handleStatusUpdate = async (id, newStatus) => {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.put(
+          `http://localhost:3005/api/admin/impactees/${id}/status`,
+          { status: newStatus },
+          { headers: { token: token } }
+        );
+        fetchImpactees();
+        setIsDropdownOpen({ ...isDropdownOpen, [id]: false });
+      } catch (error) {
+        console.error("Error updating impactee status:", error.message);
+      }
+    };
+  
+    const toggleDropdown = (id) => {
+      setIsDropdownOpen(prev => ({
+        ...prev,
+        [id]: !prev[id]
+      }));
+    };
+    
+    const ImpacteeManagement = () => {
+
+      return (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">Impactee Management</h1>
+          </div>
+    
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Name</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Donor ID</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Status</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Created At</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {impactees.map((impactee) => (
+                  <tr key={impactee._id} className="border-b hover:bg-gray-50">
+                    <td className="border border-gray-200 p-3">{impactee.impacteeDetails.name}</td>
+                    <td className="border border-gray-200 p-3">
+                      {impactee.donorId ? impactee.donorId._id : 'No Donor'}
+                    </td>
+                    <td className="border border-gray-200 p-3">
+                      <div className="relative">
+                        <button
+                          onClick={() => toggleDropdown(impactee._id)}
+                          className={`w-full px-4 py-2 text-left text-sm font-medium rounded-md 
+                            ${impactee.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                              impactee.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                                'bg-yellow-100 text-yellow-800'} 
+                            hover:bg-opacity-80 focus:outline-none`}
+                        >
+                          {impactee.status}
+                        </button>
+                        
+                        {isDropdownOpen[impactee._id] && (
+                          <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg">
+                            <div className="py-1">
+                              <button
+                                onClick={() => handleStatusUpdate(impactee._id, 'Pending')}
+                                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                Pending
+                              </button>
+                              <button
+                                onClick={() => handleStatusUpdate(impactee._id, 'Approved')}
+                                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                Approved
+                              </button>
+                              <button
+                                onClick={() => handleStatusUpdate(impactee._id, 'Rejected')}
+                                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                Rejected
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="border border-gray-200 p-3">
+                      {new Date(impactee.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="border border-gray-200 p-3">
+                      <button
+                        onClick={() => {
+                          setSelectedImpactee(impactee);
+                          setIsModalOpen1(true);
+                        }}
+                        className="text-blue-500 hover:bg-blue-100 p-2 rounded-full transition-colors"
+                      >
+                        <Edit size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+    
+          {/* Modal */}
+          {isModalOpen1 && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white rounded-lg p-6 w-96 max-w-md">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Impactee Details
+                  </h3>
+                  <button
+                    onClick={() => setIsModalOpen1(false)}
+                    className="text-gray-400 hover:text-gray-500"
+                  >
+                    ×
+                  </button>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <p className="text-sm text-gray-600">Name</p>
+                    <p className="font-medium">{selectedImpactee?.impacteeDetails.name}</p>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <p className="text-sm text-gray-600">Status</p>
+                    <p className={`font-medium ${
+                      selectedImpactee?.status === 'Approved' ? 'text-green-600' :
+                      selectedImpactee?.status === 'Rejected' ? 'text-red-600' :
+                      'text-yellow-600'
+                    }`}>
+                      {selectedImpactee?.status}
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <p className="text-sm text-gray-600">Donor ID</p>
+                    <p className="font-medium">{selectedImpactee?.donorId?._id || 'No Donor'}</p>
+                  </div>
+                </div>
+    
+                <div className="mt-6">
+                  <button
+                    onClick={() => setIsModalOpen1(false)}
+                    className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+    
 
   const renderUsersList = (users, title, type) => (
     <div className="bg-white shadow-md rounded-lg p-4 mt-4">
@@ -827,6 +1012,10 @@ const AdminDashboard = () => {
         return renderSuppliersList();
         case 'needy':
           return renderNeedyIndividualsList();
+          case 'Impactee':
+            return ImpacteeManagement();
+            case 'voucher':
+              return renderNeedyIndividualsList();
         case 'donors':
             return renderUsersList(donors, 'Donors List', 'donor');
       default:
@@ -847,7 +1036,9 @@ const AdminDashboard = () => {
             { name: 'Donors', icon: <Users />, tab: 'donors' },
             { name: 'NGOs', icon: <Home />, tab: 'ngos' },
             { name: 'Suppliers', icon: <ShoppingBag />, tab: 'suppliers' },
-            { name: 'Needy Individuals', icon: <ShoppingBag />, tab: 'needy' }
+            { name: 'Needy Individuals', icon: <ShoppingBag />, tab: 'needy' },
+            { name: 'Impactee', icon: <ShoppingBag />, tab: 'Impactee' },
+            { name: 'Voucher', icon: <ShoppingBag />, tab: 'voucher' }
           ].map((item) => (
             <button
               key={item.tab}
