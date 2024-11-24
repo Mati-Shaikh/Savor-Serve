@@ -21,7 +21,7 @@ const Header = () => {
                                     <Disclosure.Panel className="md:hidden z-10">
                                         <nav className="space-y-1">
                                             <a href="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">Home</a>
-                                            <Disclosure as="div" className="space-y-1 z-10">
+                                            {/* <Disclosure as="div" className="space-y-1 z-10">
                                                 <Disclosure.Button className="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
                                                     Campaigns
                                                 </Disclosure.Button>
@@ -30,13 +30,10 @@ const Header = () => {
                                                 <Disclosure.Button className="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
                                                     Roles
                                                 </Disclosure.Button>
-                                                <Disclosure.Panel className="pl-5 z-10">
-                                                    <a href="/roles/1" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin</a>
-                                                    <a href="/ngo" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">NGO</a>
-                                                    <a href="/roles/3" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Grocery Supplier</a>
-                                                    <a href="/roles/4" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Donor</a>
-                                                </Disclosure.Panel>
-                                            </Disclosure>
+                                            </Disclosure> */}
+                                            <a href="/campaign" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">Campaign</a>
+                                            <a href="/roles" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">Roles</a>
+
                                             <a href="/aboutus" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">About Us</a>
                                             <a href="/faqs" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">FAQs</a>
                                             <a href="/contactUs" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">Contact Us</a>
