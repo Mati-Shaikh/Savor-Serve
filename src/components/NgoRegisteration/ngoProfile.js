@@ -44,12 +44,7 @@ import {
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
               >
-                <a
-                  href="/profile"
-                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105"
-                >
-                  <FaUser className="mr-2" /> Account
-                </a>
+                
                 <a
                   href="/"
                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105"
@@ -152,13 +147,22 @@ const NGORegistrationForm = () => {
     if (!validateForm()) {
       return;
     }
-
+  
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("Authentication token missing");
       }
-
+  
+      // Generate a unique 13-digit CNIC
+      const generateUniqueCnic = () => {
+        const timestampPart = Date.now().toString().slice(-9); // Last 9 digits of timestamp
+        const randomPart = Math.floor(Math.random() * 9000 + 1000).toString(); // Random 4 digits
+        return timestampPart + randomPart; // Combine to make 13 digits
+      };
+  
+      const uniqueCnic = generateUniqueCnic();
+  
       const requestBody = {
         name: ngoProfile.name,
         registrationNumber: ngoProfile.name.replace(/\s+/g, ""),
@@ -170,11 +174,11 @@ const NGORegistrationForm = () => {
           {
             name: "Initial Impactee",
             phone: "+1234567890",
-            cnic: "804",
+            cnic: uniqueCnic,
           },
         ],
       };
-
+  
       const response = await fetch("http://localhost:3005/api/ngo/register", {
         method: "POST",
         headers: {
@@ -183,27 +187,28 @@ const NGORegistrationForm = () => {
         },
         body: JSON.stringify(requestBody),
       });
-
+  
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Registration failed: ${errorText}`);
       }
-
+  
       const data = await response.json();
       console.log(data.ngo._id);
-
-       // Store the ngoId in local storage
-    localStorage.setItem("ngoId", data.ngo._id);
-      
+  
+      // Store the ngoId in local storage
+      localStorage.setItem("ngoId", data.ngo._id);
+  
       // Set registered NGO details and show success modal
       setRegisteredNgoDetails(data.ngo);
       setShowSuccessModal(true);
-
+  
     } catch (error) {
       // Show error dialog or toast
       alert(error.message);
     }
   };
+  
 
   return (
     <>

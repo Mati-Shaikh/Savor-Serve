@@ -115,7 +115,7 @@ const LoginPage = () => {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <div className="flex justify-center space-x-4 mb-6">
           <button
-            onClick={handleGoogleLogin}
+            //onClick={handleGoogleLogin}
             className="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-100 transition-colors"
           >
             <FaGoogle className="text-red-500" size={20} />
@@ -167,16 +167,12 @@ const LoginPage = () => {
           </button>
         </form>
         <div className="mt-6 text-center text-sm">
-          <a href="/resetpassword" className="text-blue-500 hover:underline">
+          {/* <a href="/resetpassword" className="text-blue-500 hover:underline">
             Reset password
-          </a>
+          </a> */}
           <span className="mx-2 text-gray-500">•</span>
           <a href="/signup" className="text-blue-500 hover:underline">
             New user? Sign up
-          </a>
-          <span className="mx-2 text-gray-500">•</span>
-          <a href="/admin" className="text-blue-500 hover:underline">
-            Admin? Click
           </a>
         </div>
       </div>
