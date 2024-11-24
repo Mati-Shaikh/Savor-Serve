@@ -1,23 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebook, FaApple } from "react-icons/fa";
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-
-// Your Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAVg2o6XAUE05cIl5s09KhLfxMNH56aeKE",
-  authDomain: "authentication-51789.firebaseapp.com",
-  projectId: "authentication-51789",
-  storageBucket: "authentication-51789.appspot.com",
-  messagingSenderId: "921096435188",
-  appId: "1:921096435188:web:12c9a200a2374035eb35a1",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -64,7 +47,7 @@ const LoginPage = () => {
           navigate("/home");
           break;
         case "Admin":
-          navigate("/adminDashboard");
+          navigate("/admin");
           break;
         case "NGO":
           navigate("/ngodashboard");
@@ -82,27 +65,6 @@ const LoginPage = () => {
     }
   };
   
-
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-
-      // Access the user information from the result object
-      const user = result.user;
-
-      // Log the user object to the console to see its structure and data
-      console.log("Google Login successful:", user);
-
-      // Storing the user in localStorage (optional for user persistence)
-      localStorage.setItem("user", JSON.stringify(user));
-      // Redirect to dashboard
-      navigate("/home");
-    } catch (err) {
-      setError("Google Login failed. Please try again.");
-      console.error("Google Login Error:", err); // Log any errors that might occur during the process
-    }
-  };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">

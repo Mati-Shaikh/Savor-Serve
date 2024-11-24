@@ -32,7 +32,7 @@ const AdminPage = () => {
     if (enteredKey === ADMIN_KEY) {
       // Save admin session (optional)
       localStorage.setItem("isAdmin", true);
-      navigate("/admin/dashboard"); // Navigate to admin dashboard page
+      navigate("/adminDashboard"); // Navigate to admin dashboard page
     } else {
       setError("Invalid admin key. Please try again.");
       setAdminKey(Array(6).fill(""));
@@ -68,8 +68,8 @@ const AdminPage = () => {
           </button>
         </form>
         <div className="mt-6 text-center text-sm">
-          <a href="/" className="text-blue-500 hover:underline">
-            Back to Home
+          <a href="/login" className="text-blue-500 hover:underline">
+            Back to login
           </a>
         </div>
       </div>

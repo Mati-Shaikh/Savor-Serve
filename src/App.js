@@ -22,6 +22,7 @@ import AddCauseForm from "./components/NgoRegisteration/addCause";
 import ShopDashboard from "./components/ShopComponents/DashboardLayout";
 import CampaignPage from "./components/CampaignPage.js/campaign";
 import Role from "./components/Roles/role";
+import AdminVerification from "./components/LoginAndSignupComponents/verifyAdmin";
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/" element={<LandingPage />} />
+        {/* <Route path="/verifyAdmin" element={<AdminVerification />} /> */}
 
         {/* Protected Routes */}
         <Route path="/admin" element={<ProtectedRoute element={AdminPage} />} />
