@@ -220,7 +220,6 @@ const DonorDashboard = () => {
 
 
   const tabs = [
-    { id: 'voucher', icon: <Wallet className="h-4 w-4" />, label: 'Voucher' },
     { id: 'wallet', icon: <Wallet className="h-4 w-4" />, label: 'Wallet' },
     { id: 'requests', icon: <Users className="h-4 w-4" />, label: 'Requests' },
     { id: 'history', icon: <History className="h-4 w-4" />, label: 'History' }
@@ -257,8 +256,8 @@ const DonorDashboard = () => {
       </div>
 
       {/* Impact Stats */}
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-lg bg-white p-6 shadow">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* <div className="rounded-lg bg-white p-6 shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Donations</p>
@@ -266,13 +265,13 @@ const DonorDashboard = () => {
             </div>
             <Heart className="h-8 w-8 text-red-500" />
           </div>
-        </div>
+        </div> */}
 
         <div className="rounded-lg bg-white p-6 shadow">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-600">Wallet Balance</p>
-          <p className="text-2xl font-bold">${walletBalance}</p>
+          <p className="text-2xl font-bold">Rs{walletBalance}</p>
         </div>
         <Wallet className="h-8 w-8 text-green-500" />
       </div>
@@ -308,7 +307,7 @@ const DonorDashboard = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 border-b-2 px-4 py-2 ${
+                className={`flex items-center space-x-2 border-b-2 px-4 py-2 Rs{
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -335,7 +334,7 @@ const DonorDashboard = () => {
                <div className="mb-4 flex items-center justify-between">
                  <div>
                    <p className="text-sm text-gray-600">Current Balance</p>
-                   <p className="text-3xl font-bold text-blue-600">${walletBalance}</p>
+                   <p className="text-3xl font-bold text-blue-600">Rs{walletBalance}</p>
                  </div>
                  <Wallet className="h-12 w-12 text-blue-500" />
                </div>
@@ -346,19 +345,19 @@ const DonorDashboard = () => {
                      onClick={() => handleAddFunds(100)}
                      className="flex-1 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
                    >
-                     Add $100
+                     Add Rs100
                    </button>
                    <button
                      onClick={() => handleAddFunds(500)}
                      className="flex-1 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
                    >
-                     Add $500
+                     Add Rs500
                    </button>
                    <button
                      onClick={() => handleAddFunds(1000)}
                      className="flex-1 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
                    >
-                     Add $1000
+                     Add Rs1000
                    </button>
                  </div>
        
@@ -398,7 +397,7 @@ const DonorDashboard = () => {
                        <tr key={transaction._id}>
                          <td className="px-4 py-2">{new Date(transaction.date).toLocaleString()}</td>
                          <td className="px-4 py-2">{transaction.type}</td>
-                         <td className="px-4 py-2">${transaction.amount}</td>
+                         <td className="px-4 py-2">Rs{transaction.amount}</td>
                          <td className="px-4 py-2">{transaction.type === "credit" ? "Added" : "Donated"}</td>
                        </tr>
                      ))}
@@ -481,7 +480,7 @@ const DonorDashboard = () => {
                          <td className="px-4 py-2">{request.impacteeDetails.name}</td>
                          <td className="px-4 py-2">
                            <span
-                             className={`rounded-full px-2 py-1 text-sm ${
+                             className={`rounded-full px-2 py-1 text-sm Rs{
                                request.status === "Pending"
                                  ? "bg-yellow-100 text-yellow-800"
                                  : "bg-green-100 text-green-800"
@@ -527,11 +526,11 @@ const DonorDashboard = () => {
                 <tr key={donation._id}>
                   <td className="px-4 py-2">{donation._id}</td>
                   <td className="px-4 py-2">{donation.impacteeId ? donation.impacteeId : 'N/A'}</td>
-                  <td className="px-4 py-2">${donation.amount}</td>
+                  <td className="px-4 py-2">Rs{donation.amount}</td>
                   <td className="px-4 py-2">{new Date(donation.date).toLocaleDateString()}</td>
                   <td className="px-4 py-2">{donation.impacteeId ? 'Impact' : 'No Impact'}</td>
                   <td className="px-4 py-2">
-                    <span className={`rounded-full px-2 py-1 text-sm ${donation.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                    <span className={`rounded-full px-2 py-1 text-sm Rs{donation.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
                       {donation.status}
                     </span>
                   </td>
@@ -553,7 +552,7 @@ const DonorDashboard = () => {
         <div className="rounded-lg bg-blue-50 p-4">
           <h4 className="text-sm font-medium text-gray-600">Total Impact</h4>
           <p className="mt-2 text-2xl font-bold text-blue-600">
-            ${donationHistory.reduce((sum, donation) => sum + donation.amount, 0)}
+            Rs{donationHistory.reduce((sum, donation) => sum + donation.amount, 0)}
           </p>
         </div>
         <div className="rounded-lg bg-green-50 p-4">

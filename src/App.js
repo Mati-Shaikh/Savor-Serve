@@ -4,7 +4,7 @@ import LoginPage from "./components/LoginAndSignupComponents/Login";
 import SignupPage from "./components/LoginAndSignupComponents/Signup";
 import ResetPassword from "./components/LoginAndSignupComponents/ResetPassword";
 import LandingPage from "./components/LandingPage/LangingPage";
-import Dashboard from "./components/Dashboard/dashboard";
+//import Dashboard from "./components/Dashboard/dashboard";
 import HomePage from "./components/Home/home";
 import ProfileManagement from "./components/Profile/profile";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
@@ -52,10 +52,10 @@ const App = () => {
         <Route path="/donatetongo" element={<DonateToNGO/>}/>
         <Route path="/donatetoSupplier" element={<DonateToSupplier/>}/>
 
-        <Route
+        {/* <Route
           path="/dashboard"
           element={<ProtectedRoute element={Dashboard} />}
-        />
+        /> */}
         <Route path="/home" element={<ProtectedRoute element={HomePage} />} />
         <Route
           path="/profile"

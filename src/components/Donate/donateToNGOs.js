@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { FaUser, FaCog, FaSignOutAlt, FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Footer from "../LandingPageComponents/Footer";
+import { FaCheckCircle } from "react-icons/fa"; // For the checkmark icon
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -64,6 +65,16 @@ const Navbar = () => {
     );
 };
 
+// Success Popup Component
+const SuccessPopup = ({ message }) => (
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
+            <FaCheckCircle size={48} className="text-green-500 mx-auto mb-4" />
+            <p className="text-lg font-bold">{message}</p>
+        </div>
+    </div>
+);
+
 const NGOsComponent = () => {
     const [ngos, setNgos] = useState([]);
     const [selectedNgo, setSelectedNgo] = useState(null);
@@ -71,6 +82,7 @@ const NGOsComponent = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState(null);
+    const [donationSuccess, setDonationSuccess] = useState(false);
 
     const token = localStorage.getItem("token");
 
@@ -103,6 +115,7 @@ const NGOsComponent = () => {
             );
 
             setMessage("Donation successful!");
+            setDonationSuccess(true); // Show success popup
             setModalOpen(false);
             setAmount("");
             fetchNgos();
@@ -129,6 +142,17 @@ const NGOsComponent = () => {
     useEffect(() => {
         fetchNgos();
     }, []);
+
+    // Hide the success modal after 3 seconds
+    useEffect(() => {
+        if (donationSuccess) {
+            const timer = setTimeout(() => {
+                setDonationSuccess(false);
+            }, 1000);
+
+            return () => clearTimeout(timer); // Cleanup the timer
+        }
+    }, [donationSuccess]);
 
     return (
         <>
@@ -189,8 +213,10 @@ const NGOsComponent = () => {
                 )}
             </div>
             <Footer />
+            {donationSuccess && <SuccessPopup message="Donation successful!" />}
         </>
     );
 };
+
 
 export default NGOsComponent;
