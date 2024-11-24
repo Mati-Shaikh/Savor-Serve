@@ -25,10 +25,6 @@ const Header = () => {
                                                 <Disclosure.Button className="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
                                                     Campaigns
                                                 </Disclosure.Button>
-                                                <Disclosure.Panel className="pl-5 z-10">
-                                                    <a href="/campaigns/1" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 1</a>
-                                                    <a href="/campaigns/2" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 2</a>
-                                                </Disclosure.Panel>
                                             </Disclosure>
                                             <Disclosure as="div" className="space-y-1 z-10">
                                                 <Disclosure.Button className="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
@@ -59,20 +55,20 @@ const Header = () => {
                     <nav className="hidden md:flex flex-1 justify-center space-x-8">
                         <a href="/" className="text-base font-medium text-gray-700 hover:text-gray-900">Home</a>
                         <div className="relative group z-10">
-                            <button className="text-base font-medium text-gray-700 hover:text-gray-900">Campaigns</button>
-                            <div className="absolute left-0 hidden mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block z-10">
+                            <a href="/campaign" className="text-base font-medium text-gray-700 hover:text-gray-900">Campaigns</a>
+                            {/* <div className="absolute left-0 hidden mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block z-10">
                                 <a href="/campaigns/1" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 1</a>
                                 <a href="/campaigns/2" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Submenu 2</a>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="relative group z-10">
-                            <button className="text-base font-medium text-gray-700 hover:text-gray-900">Roles</button>
-                            <div className="absolute left-0 hidden w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block z-10">
+                            <a href='/roles' className="text-base font-medium text-gray-700 hover:text-gray-900">Roles</a>
+                            {/* <div className="absolute left-0 hidden w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 group-hover:block z-10">
                             <a href="/roles/1" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin</a>
                                                     <a href="/ngo" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">NGO</a>
                                                     <a href="/roles/3" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Grocery Supplier</a>
                                                     <a href="/roles/4" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Donor</a>
-                            </div>
+                            </div> */}
                         </div>
                         <a href="/aboutus" className="text-base font-medium text-gray-700 hover:text-gray-900">About Us</a>
                         <a href="/faqs" className="text-base font-medium text-gray-700 hover:text-gray-900">FAQs</a>

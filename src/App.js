@@ -21,6 +21,8 @@ import AdminDashboard from "./components/AdminDashboard/adminDashboard"
 import NGORegistrationForm from "./components/NgoRegisteration/ngoProfile";
 import AddCauseForm from "./components/NgoRegisteration/addCause";
 import ShopDashboard from "./components/ShopComponents/DashboardLayout";
+import CampaignPage from "./components/CampaignPage.js/campaign";
+import Role from "./components/Roles/role";
 
 const App = () => {
   return (
@@ -36,6 +38,8 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/campaign" element={<CampaignPage />} />
+        <Route path="/roles" element={<Role />} />
         <Route path="/faqs" element={<FAQs />} />
 
         <Route path="/ngoRegister" element={<NGORegistrationForm />} />

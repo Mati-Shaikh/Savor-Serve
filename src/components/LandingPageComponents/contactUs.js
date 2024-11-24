@@ -12,17 +12,17 @@ const ContactUs = () => {
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
         <div className="bg-gray-100 rounded-lg p-6 flex flex-col items-start">
-          <FaEnvelope className="text-red-500 h-8 w-8 mb-4" />
+          <FaEnvelope className="text-blue-500 h-8 w-8 mb-4" />
           <h3 className="text-lg font-medium mb-2">Online Support</h3>
           <p className="text-gray-600">support@myimpactmeter.com</p>
         </div>
         <div className="bg-gray-100 rounded-lg p-6 flex flex-col items-start">
-          <FaEnvelope className="text-red-500 h-8 w-8 mb-4" />
+          <FaEnvelope className="text-blue-500 h-8 w-8 mb-4" />
           <h3 className="text-lg font-medium mb-2">Direct Mail</h3>
           <p className="text-gray-600">info@myimpactmeter.com</p>
         </div>
         <div className="bg-gray-100 rounded-lg p-6 flex flex-col items-start">
-          <FaMapMarkerAlt className="text-red-500 h-8 w-8 mb-4" />
+          <FaMapMarkerAlt className="text-blue-500 h-8 w-8 mb-4" />
           <h3 className="text-lg font-medium mb-2">Our Office</h3>
           <p className="text-gray-600">
             4th Floor, CP 63, Defence Raya Golf Resort, Sector M, DHA Phase 6, Lahore, Pakistan
@@ -33,7 +33,7 @@ const ContactUs = () => {
           </p>
         </div>
         <div className="bg-gray-100 rounded-lg p-6 flex flex-col items-start">
-          <FaPhoneAlt className="text-red-500 h-8 w-8 mb-4" />
+          <FaPhoneAlt className="text-blue-500 h-8 w-8 mb-4" />
           <h3 className="text-lg font-medium mb-2">Contact #</h3>
           <p className="text-gray-600">
             +92322 6460266
