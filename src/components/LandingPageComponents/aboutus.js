@@ -29,7 +29,7 @@ const AboutUs = () => {
       <div className="max-w-7xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold text-blue-600 mb-4">About Us</h1>
         <p className="text-lg text-gray-600">
-          At My Impact Meter, we are dedicated to creating positive change through our unique platform. Learn more about our goals, vision, and mission.
+          At Savor and Serve, we are dedicated to creating positive change through our unique platform. Learn more about our goals, vision, and mission.
         </p>
       </div>
 
@@ -72,7 +72,7 @@ const AboutUs = () => {
                 className="w-32 h-32 rounded-full object-cover mb-4"
               />
               <h3 className="text-xl font-semibold text-gray-800">{member.name}</h3>
-              <p className="text-sm text-pink-600 font-medium">{member.role}</p>
+              <p className="text-sm text-blue-600 font-medium">{member.role}</p>
               <p className="text-gray-600 text-center mt-2">{member.description}</p>
             </div>
           ))}

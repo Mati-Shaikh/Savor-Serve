@@ -18,9 +18,9 @@ const HeroSection = () => {
         <p className="text-xl lg:text-2xl font-semibold max-w-3xl">
           "Your small contribution can make a big difference. Join us to serve, uplift, and transform communities together!"
         </p>
-        <button className="mt-8 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-full transition duration-300">
+        <a href='/signUp' className="mt-8 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-full transition duration-300">
           Donate Now
-        </button>
+        </a>
       </div>
     </div>
   );
