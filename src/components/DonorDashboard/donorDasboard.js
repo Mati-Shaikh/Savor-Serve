@@ -220,6 +220,7 @@ const DonorDashboard = () => {
 
 
   const tabs = [
+    { id: 'voucher', icon: <Wallet className="h-4 w-4" />, label: 'Voucher' },
     { id: 'wallet', icon: <Wallet className="h-4 w-4" />, label: 'Wallet' },
     { id: 'requests', icon: <Users className="h-4 w-4" />, label: 'Requests' },
     { id: 'history', icon: <History className="h-4 w-4" />, label: 'History' }

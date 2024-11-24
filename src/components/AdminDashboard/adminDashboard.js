@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from "./needyModal";
 import axios from "axios";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
@@ -15,11 +16,13 @@ import {
   MapPin,
   Phone,
   Globe ,
+  LogOutIcon,
   RefreshCcw
 } from 'lucide-react';
 
 // API Service for centralized API calls
 const apiService = {
+
   async fetchWithToken(url, method = 'GET', body = null) {
     const token = localStorage.getItem('token'); // Assuming token is stored
     const headers = {
@@ -76,6 +79,7 @@ const apiService = {
     return this.fetchWithToken(`http://localhost:3005/api/admin/suppliers/${id}`, 'DELETE');
   }
 };
+
 
 /// Modal Component for Detailed View and Edit
 const DetailModal = ({ isOpen, onClose, children }) => {
@@ -256,7 +260,7 @@ const DetailModal = ({ isOpen, onClose, children }) => {
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [donors, setDonors] = useState([]);
-  const [ngos, setNGOs] = useState([]);
+  //const [ngos, setNGOs] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [selectedNGO, setSelectedNGO] = useState(null);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
@@ -264,6 +268,41 @@ const AdminDashboard = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editType, setEditType] = useState('');
+  const [ngos, setNgos] = useState([]);
+const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState(null);
+
+const navigate = useNavigate(); // Hook to navigate
+
+const handleLogout = () => {
+  const confirmLogout = window.confirm("Are you sure you want to logout?");
+  if (confirmLogout) {
+    localStorage.removeItem('token'); // Remove token from localStorage
+    navigate('/'); // Redirect to the root (home) page
+  }
+};
+// Fetch NGOs function
+const fetchNGOs = async () => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:3005/api/admin/ngos', {
+      headers: { token: token }
+    });
+    setNgos(response.data.ngos);
+  } catch (error) {
+    console.error('Error fetching NGOs:', error);
+    setError('Failed to fetch NGOs. Please try again later.');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+// Add this to useEffect to fetch NGOs when component mounts
+useEffect(() => {
+  fetchNGOs();
+}, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -273,7 +312,7 @@ const AdminDashboard = () => {
         const suppliersData = await apiService.getSuppliers();
 
         setDonors(donorsData.donors);
-        setNGOs(ngosData.ngos);
+        //setNGOs(ngosData.ngos);
         setSuppliers(suppliersData.suppliers);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -296,7 +335,7 @@ const AdminDashboard = () => {
           break;
         case 'ngo':
           await apiService.deleteNGO(id);
-          setNGOs(ngos.filter(ngo => ngo._id !== id));
+          //setNGOs(ngos.filter(ngo => ngo._id !== id));
           break;
         case 'supplier':
           await apiService.deleteSupplier(id);
@@ -322,9 +361,7 @@ const AdminDashboard = () => {
           break;
         case 'ngo':
           result = await apiService.updateNGO(id, updatedData);
-          setNGOs(ngos.map(ngo => 
-            ngo._id === id ? { ...ngo, ...updatedData } : ngo
-          ));
+         
           break;
         case 'supplier':
           result = await apiService.updateSupplier(id, updatedData);
@@ -611,9 +648,208 @@ const AdminDashboard = () => {
       }
     };
 
+
+    {/*fetching Vouchers functionality */}
+    const [vouchers, setvouchers] = useState([]);
+    const [isModalvoucher, setIsModalvoucher] = useState(false);
+    const [selectedvoucher, setSelectedvoucher] = useState(null);
+    const [isDropdownvoucher, setIsDropdownvoucher] = useState({});
+
+    const fetchVouchers = async() =>{
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get("http://localhost:3005/api/donor/getVouchers", {
+          headers: { token:token }
+        });
+        console.log(response.data.vouchers);
+        setvouchers(response.data.vouchers);
+      } catch (error) {
+        console.error("Error fetching impactees:", error.message);
+      }
+
+    };
+
     useEffect(() => {
       fetchImpactees();
+      fetchVouchers();
     }, []);
+
+    {/*Status Update For voucher */}
+
+    const handleStatusUpdateVoucher = async (id, newStatus) => {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.put(
+          
+          `http://localhost:3005/api/donor/update-status/${id}`,
+          { status: newStatus },
+          { headers: { token: token } }
+        );
+        fetchVouchers();
+        setIsDropdownvoucher({ ...isDropdownvoucher, [id]: false });
+      } catch (error) {
+        console.error("Error updating Vouchers status:", error.message);
+      }
+    };
+    {/*End function */}
+    const toggleDropdownVoucher = (id) => {
+      setIsDropdownvoucher(prev => ({
+        ...prev,
+        [id]: !prev[id]
+      }));
+    };
+
+    const VoucherManagement = () => {
+      return (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">Voucher Management</h1>
+          </div>
+    
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Amount</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Shop ID</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Donor ID</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Status</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Tracking ID</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Created At</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vouchers.map((voucher) => (
+                  <tr key={voucher._id} className="border-b hover:bg-gray-50">
+                    <td className="border border-gray-200 p-3">${voucher.amount}</td>
+                    <td className="border border-gray-200 p-3">{voucher.shop}</td>
+                    <td className="border border-gray-200 p-3">{voucher.donorId}</td>
+                    <td className="border border-gray-200 p-3">
+                      <div className="relative">
+                        <button
+                          onClick={() => toggleDropdownVoucher(voucher._id)}
+                          className={`w-full px-4 py-2 text-left text-sm font-medium rounded-md 
+                            ${voucher.status === 'Received' ? 'bg-green-100 text-green-800' :
+                              voucher.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-blue-100 text-blue-800'} 
+                            hover:bg-opacity-80 focus:outline-none`}
+                        >
+                          {voucher.status}
+                        </button>
+                        
+                        {isDropdownvoucher[voucher._id] && (
+                          <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg">
+                            <div className="py-1">
+                              <button
+                                onClick={() => handleStatusUpdateVoucher(voucher._id, 'Pending')}
+                                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                Pending
+                              </button>
+                              <button
+                                onClick={() => handleStatusUpdateVoucher(voucher._id, 'Received')}
+                                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                Received
+                              </button>
+                              <button
+                                onClick={() => handleStatusUpdateVoucher(voucher._id, 'Used')}
+                                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                Used
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="border border-gray-200 p-3">{voucher.trackingId}</td>
+                    <td className="border border-gray-200 p-3">
+                      {new Date(voucher.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="border border-gray-200 p-3">
+                      <button
+                        onClick={() => {
+                          setSelectedvoucher(voucher);
+                          setIsModalvoucher(true);
+                        }}
+                        className="text-blue-500 hover:bg-blue-100 p-2 rounded-full transition-colors"
+                      >
+                        <Edit size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+    
+          {/* Modal */}
+          {isModalvoucher && selectedvoucher && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white rounded-lg p-6 w-96 max-w-md">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Voucher Details
+                  </h3>
+                  <button
+                    onClick={() => setIsModalvoucher(false)}
+                    className="text-gray-400 hover:text-gray-500"
+                  >
+                    ×
+                  </button>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <p className="text-sm text-gray-600">Amount</p>
+                    <p className="font-medium">${selectedvoucher.amount}</p>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <p className="text-sm text-gray-600">Status</p>
+                    <p className={`font-medium ${
+                      selectedvoucher.status === 'Received' ? 'text-green-600' :
+                      selectedvoucher.status === 'Pending' ? 'text-yellow-600' :
+                      'text-blue-600'
+                    }`}>
+                      {selectedvoucher.status}
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <p className="text-sm text-gray-600">Tracking ID</p>
+                    <p className="font-medium">{selectedvoucher.trackingId}</p>
+                  </div>
+    
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <p className="text-sm text-gray-600">Shop ID</p>
+                    <p className="font-medium">{selectedvoucher.shop}</p>
+                  </div>
+    
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <p className="text-sm text-gray-600">Donor ID</p>
+                    <p className="font-medium">{selectedvoucher.donorId}</p>
+                  </div>
+                </div>
+    
+                <div className="mt-6">
+                  <button
+                    onClick={() => setIsModalvoucher(false)}
+                    className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+
 
     const handleStatusUpdate = async (id, newStatus) => {
       try {
@@ -797,9 +1033,7 @@ const AdminDashboard = () => {
                 <td className="p-2">{user.Email}</td>
                 <td className="p-2">{user.PhoneNumber}</td>
                 <td className="p-2 flex space-x-2">
-                  <button className="text-blue-500 hover:bg-blue-100 p-1 rounded">
-                    <Edit size={16} />
-                  </button>
+                  
                   <button className="text-red-500 hover:bg-red-100 p-1 rounded">
                     <Trash2 size={16} />
                   </button>
@@ -836,30 +1070,39 @@ const AdminDashboard = () => {
         </div>
         <div>
           <h3 className="text-xl font-semibold mb-2">Causes</h3>
-          {ngo.causes.map((cause, index) => (
-            <div key={index} className="bg-gray-100 p-3 rounded-lg mb-2">
-              <p><strong>{cause.title}</strong></p>
-              <p>{cause.description}</p>
-              <p>Goal: ${cause.goal}</p>
-              <p>Timeline: {new Date(cause.timeline).toLocaleDateString()}</p>
-            </div>
-          ))}
+          {Array.isArray(ngo.causes) && ngo.causes.length > 0 ? (
+            ngo.causes.map((cause, index) => (
+              <div key={index} className="bg-gray-100 p-3 rounded-lg mb-2">
+                <p><strong>{cause.title}</strong></p>
+                <p>{cause.description}</p>
+                <p>Goal: ${cause.goal}</p>
+                <p>Timeline: {new Date(cause.timeline).toLocaleDateString()}</p>
+              </div>
+            ))
+          ) : (
+            <p>No causes available</p>
+          )}
         </div>
       </div>
       <div className="mt-4">
         <h3 className="text-xl font-semibold mb-2">Packages</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {ngo.packages.map((pkg, index) => (
-            <div key={index} className="bg-gray-100 p-3 rounded-lg">
-              <p><strong>{pkg.title}</strong></p>
-              <p>{pkg.description}</p>
-              <p>Price: ${pkg.price}</p>
-            </div>
-          ))}
+          {Array.isArray(ngo.packages) && ngo.packages.length > 0 ? (
+            ngo.packages.map((pkg, index) => (
+              <div key={index} className="bg-gray-100 p-3 rounded-lg">
+                <p><strong>{pkg.title}</strong></p>
+                <p>{pkg.description}</p>
+                <p>Price: ${pkg.price}</p>
+              </div>
+            ))
+          ) : (
+            <p>No packages available</p>
+          )}
         </div>
       </div>
     </div>
   );
+  
 
   const renderSupplierDetails = (supplier) => (
     <div>
@@ -890,6 +1133,95 @@ const AdminDashboard = () => {
       </div>
     </div>
   );
+// Add this to your existing state declarations
+
+
+
+
+  //const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    registrationNumber: '',
+    description: '',
+    address: '',
+    phone: '',
+    website: '',
+    causes: [],
+    packages: [],
+    impactees: []
+  });
+  
+
+  // Delete NGO function
+  const handleDeleteNGO = async (id) => {
+    if (window.confirm('Are you sure you want to delete this NGO?')) {
+      console.log('Deleting NGO with ID:', id);
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(`http://localhost:3005/api/admin/ngos/${id}`, {
+          headers: { token: token }
+        });
+        console.log('Response from server:', response.data);
+        fetchNGOs(); // Refresh NGO list after deletion
+      } catch (error) {
+        console.error('Error deleting NGO:', error);
+        if (error.response) {
+          // Server-side error
+          alert(`Failed to delete NGO: ${error.response.data.message}`);
+        } else {
+          // Network or client-side error
+          alert('Failed to delete NGO. Please try again.');
+        }
+      }
+    }
+  };
+  
+
+  // Update NGO function
+  const handleUpdateNGO = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(
+        `http://localhost:3005/api/admin/ngos/${id}`,
+        editFormData,
+        {
+          headers: { token: token }
+        }
+      );
+      setIsEditModalOpen(false);
+      fetchNGOs(); // Refresh NGO list after update
+    } catch (error) {
+      console.error('Error updating NGO:', error);
+      alert('Failed to update NGO. Please try again.');
+    }
+  };
+
+  // Handle input changes for edit form
+  const handleEditInputChange = (e, field) => {
+    setEditFormData({
+      ...editFormData,
+      [field]: e.target.value
+    });
+  };
+
+  // Handle array input changes (causes, packages, impactees)
+  const handleArrayInputChange = (index, field, subfield, value) => {
+    const newArray = [...editFormData[field]];
+    newArray[index] = {
+      ...newArray[index],
+      [subfield]: value
+    };
+    setEditFormData({
+      ...editFormData,
+      [field]: newArray
+    });
+  };
+
+  // Open edit modal with NGO data
+  const openEditModal = (ngo) => {
+    setEditFormData(ngo);
+    setIsEditModalOpen(true);
+  };
 
   const renderNGOsList = () => (
     <div className="bg-white shadow-md rounded-lg p-4 mt-4">
@@ -920,10 +1252,16 @@ const AdminDashboard = () => {
                   >
                     <Info size={16} />
                   </button>
-                  <button className="text-blue-500 hover:bg-blue-100 p-1 rounded">
+                  {/* <button 
+                    onClick={() => openEditModal(ngo)}
+                    className="text-blue-500 hover:bg-blue-100 p-1 rounded"
+                  >
                     <Edit size={16} />
-                  </button>
-                  <button className="text-red-500 hover:bg-red-100 p-1 rounded">
+                  </button> */}
+                  <button 
+                    onClick={() => handleDeleteNGO(ngo._id)}
+                    className="text-red-500 hover:bg-red-100 p-1 rounded"
+                  >
                     <Trash2 size={16} />
                   </button>
                 </td>
@@ -932,8 +1270,182 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Edit Modal */}
+      {/* Edit Modal */}
+{/* {isEditModalOpen && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-bold">Edit NGO</h3>
+        <button
+          onClick={() => setIsEditModalOpen(false)}
+          className="text-gray-500 hover:text-gray-700"
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <input
+              type="text"
+              value={editFormData.name}
+              onChange={(e) => handleEditInputChange(e, 'name')}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Registration Number</label>
+            <input
+              type="text"
+              value={editFormData.registrationNumber}
+              onChange={(e) => handleEditInputChange(e, 'registrationNumber')}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Phone</label>
+            <input
+              type="text"
+              value={editFormData.phone}
+              onChange={(e) => handleEditInputChange(e, 'phone')}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Website</label>
+            <input
+              type="text"
+              value={editFormData.website}
+              onChange={(e) => handleEditInputChange(e, 'website')}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Address</label>
+          <textarea
+            value={editFormData.address}
+            onChange={(e) => handleEditInputChange(e, 'address')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            rows="2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <textarea
+            value={editFormData.description}
+            onChange={(e) => handleEditInputChange(e, 'description')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            rows="3"
+          />
+        </div>
+
+       
+        <div>
+          <h4 className="font-medium text-gray-900 mb-2">Causes</h4>
+          {editFormData.causes.map((cause, index) => (
+            <div key={index} className="border rounded-md p-4 mb-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Title</label>
+                  <input
+                    type="text"
+                    value={cause.title}
+                    onChange={(e) => handleArrayInputChange(index, 'causes', 'title', e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Goal</label>
+                  <input
+                    type="number"
+                    value={cause.goal}
+                    onChange={(e) => handleArrayInputChange(index, 'causes', 'goal', e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="mt-2">
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <textarea
+                  value={cause.description}
+                  onChange={(e) => handleArrayInputChange(index, 'causes', 'description', e.target.value)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  rows="2"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+      
+        <div>
+          <h4 className="font-medium text-gray-900 mb-2">Packages</h4>
+          {editFormData.packages.map((pkg, index) => (
+            <div key={index} className="border rounded-md p-4 mb-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Title</label>
+                  <input
+                    type="text"
+                    value={pkg.title}
+                    onChange={(e) => handleArrayInputChange(index, 'packages', 'title', e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Price</label>
+                  <input
+                    type="number"
+                    value={pkg.price}
+                    onChange={(e) => handleArrayInputChange(index, 'packages', 'price', e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="mt-2">
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <textarea
+                  value={pkg.description}
+                  onChange={(e) => handleArrayInputChange(index, 'packages', 'description', e.target.value)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  rows="2"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex justify-end space-x-2 mt-4">
+          <button
+            onClick={() => setIsEditModalOpen(false)}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => handleUpdateNGO(editFormData._id)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)} */}
+
     </div>
   );
+
+
 
   const renderSuppliersList = () => (
     <div className="bg-white shadow-md rounded-lg p-4 mt-4">
@@ -964,12 +1476,14 @@ const AdminDashboard = () => {
                   >
                     <Info size={16} />
                   </button>
-                  <button className="text-blue-500 hover:bg-blue-100 p-1 rounded">
-                    <Edit size={16} />
-                  </button>
-                  <button className="text-red-500 hover:bg-red-100 p-1 rounded">
-                    <Trash2 size={16} />
-                  </button>
+                  
+                  <button 
+  className="text-red-500 hover:bg-red-100 p-1 rounded"
+  onClick={() => handleDelete(supplier._id, 'supplier')}
+>
+  <Trash2 size={16} />
+</button>
+
                 </td>
               </tr>
             ))}
@@ -1015,7 +1529,7 @@ const AdminDashboard = () => {
           case 'Impactee':
             return ImpacteeManagement();
             case 'voucher':
-              return renderNeedyIndividualsList();
+              return VoucherManagement();
         case 'donors':
             return renderUsersList(donors, 'Donors List', 'donor');
       default:
@@ -1053,14 +1567,23 @@ const AdminDashboard = () => {
               <span>{item.name}</span>
             </button>
           ))}
+          
+          {/* LogOut Button */}
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center space-x-2 p-2 rounded mt-auto hover:bg-gray-100 text-red-500"
+          >
+            <LogOutIcon className="mr-2" size={16} />
+            <span>LogOut</span>
+          </button>
         </nav>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 p-8 overflow-y-auto">
         {renderDashboardContent()}
-                {/* Detail Modal for NGO and Supplier Details */}
-                <DetailModal 
+        {/* Detail Modal for NGO and Supplier Details */}
+        <DetailModal 
           isOpen={isDetailModalOpen} 
           onClose={() => setIsDetailModalOpen(false)}
         >
@@ -1082,7 +1605,6 @@ const AdminDashboard = () => {
             />
           )}
         </DetailModal>
-
       </div>
     </div>
   );
