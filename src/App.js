@@ -32,6 +32,10 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/" element={<LandingPage />} />
+        <Route path="/aboutus" element={<AboutUs/>} />
+        <Route path="/campaign"  element={<CampaignPage/>} />
+        <Route path="/roles" element={<Role/>} />
+        <Route path="/faqs" element={<FAQs/>} />
         {/* <Route path="/verifyAdmin" element={<AdminVerification />} /> */}
 
         {/* Protected Routes */}
@@ -39,10 +43,7 @@ const App = () => {
         <Route path="/adminDashboard" element={<ProtectedRoute element={AdminDashboard} />} />
         <Route path="/resetpassword" element={<ProtectedRoute element={ResetPassword} />} />
         <Route path="/contactus" element={<ProtectedRoute element={ContactUs} />} />
-        <Route path="/aboutus" element={AboutUs} />
-        <Route path="/campaign"  element={CampaignPage} />
-        <Route path="/roles" element={Role} />
-        <Route path="/faqs" element={FAQs} />
+       
         <Route path="/ngoRegister" element={<ProtectedRoute element={NGORegistrationForm} />} />
         <Route path="/addCause" element={<ProtectedRoute element={AddCauseForm} />} />
         <Route path="/ngodashboard" element={<ProtectedRoute element={NGO} />} />
