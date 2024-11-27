@@ -11,6 +11,7 @@ import { fetchShopDetails } from '../../Services/api';
 import ShopDetailsCard from './ShopDetailsCard';
 import UpdateShopForm from './UpdateShopForm';
 import Footer from '../LandingPageComponents/Footer';
+import RegisterShopModal from './RegisterShopModal';
 
 // Sample data for charts
 const monthlyData = [
@@ -93,6 +94,16 @@ const Dashboard = () => {
   const [shopDetails, setShopDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [updateTrigger, setUpdateTrigger] = useState(0);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+
+  // Show modal when shopDetails is not available
+  useEffect(() => {
+    if (!shopDetails) {
+      setIsRegisterModalOpen(true);
+    } else {
+      setIsRegisterModalOpen(false);
+    }
+  }, [shopDetails]);
 
   const loadShopDetails = async () => {
     try {
@@ -114,6 +125,12 @@ const Dashboard = () => {
     setUpdateTrigger(prev => prev + 1);
   };
 
+
+  const handleRegisterSuccess = (newShopDetails) => {
+    setShopDetails(newShopDetails);
+    setIsRegisterModalOpen(false); // Close the modal after successful registration
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -132,8 +149,9 @@ const Dashboard = () => {
         </h1>
 
         {/* Shop Management Section */}
+        {/* Shop Management Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {shopDetails && (
+          {shopDetails ? (
             <>
               <div className="transform transition-all duration-300 hover:scale-[1.02]">
                 <ShopDetailsCard shopDetails={shopDetails} />
@@ -145,40 +163,52 @@ const Dashboard = () => {
                 />
               </div>
             </>
+          ) : (
+            <p>Loading shop details...</p>
           )}
         </div>
 
+        {/* Register Shop Modal */}
+        {isRegisterModalOpen && (
+          <RegisterShopModal
+            onClose={() => setIsRegisterModalOpen(false)} // Allow manual closing
+            onSuccess={handleRegisterSuccess} // Pass success handler
+          />
+        )}
+      
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatCard
-        icon={DollarSign}
-        title="Total Donations"
-        value={`${
-          shopDetails.donations?.reduce((total, donation) => total + donation.amount, 0) || 0
-        }`}
-        trend={12} // Example trend value, update with actual logic if needed
-      />
-          <StatCard 
-            icon={Package}
-            title="funds"
-            value={`${
-              shopDetails.donations?.reduce((total, donation) => total + donation.amount, 0) || 0
-            }`}
-            trend={8}
-          />
-          <StatCard 
-            icon={Users}
-            title="donors"
-            value="890"
-            trend={-3}
-          />
-          <StatCard 
-            icon={TrendingUp}
-            title="Growth"
-            value="15%"
-            trend={5}
-          />
-        </div>
+  <StatCard
+    icon={DollarSign}
+    title="Total Donations"
+    value={`${
+      shopDetails?.donations?.reduce((total, donation) => total + donation.amount, 0) || 0
+    }`}
+    trend={12} // Example trend value, update with actual logic if needed
+  />
+  <StatCard 
+    icon={Package}
+    title="Funds"
+    value={`${
+      shopDetails?.donations?.reduce((total, donation) => total + donation.amount, 0) || 0
+    }`}
+    trend={8}
+  />
+  <StatCard 
+    icon={Users}
+    title="Donors"
+    value="890"
+    trend={-3}
+  />
+  <StatCard 
+    icon={TrendingUp}
+    title="Growth"
+    value="15%"
+    trend={5}
+  />
+</div>
+ 
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">

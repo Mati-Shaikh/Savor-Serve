@@ -31,7 +31,7 @@ const RegisterShopModal = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-8 rounded-lg w-96">
         <h2 className="text-2xl font-bold mb-4">Register Your Shop</h2>
         {error && <div className="text-red-500 mb-4">{error}</div>} {/* Display error message */}
