@@ -36,13 +36,14 @@ const App = () => {
         <Route path="/campaign"  element={<CampaignPage/>} />
         <Route path="/roles" element={<Role/>} />
         <Route path="/faqs" element={<FAQs/>} />
+        <Route path="/contactus" element={<ContactUs/>} />
         {/* <Route path="/verifyAdmin" element={<AdminVerification />} /> */}
 
         {/* Protected Routes */}
         <Route path="/admin" element={<ProtectedRoute element={AdminPage} />} />
         <Route path="/adminDashboard" element={<ProtectedRoute element={AdminDashboard} />} />
         <Route path="/resetpassword" element={<ProtectedRoute element={ResetPassword} />} />
-        <Route path="/contactus" element={<ProtectedRoute element={ContactUs} />} />
+        
        
         <Route path="/ngoRegister" element={<ProtectedRoute element={NGORegistrationForm} />} />
         <Route path="/addCause" element={<ProtectedRoute element={AddCauseForm} />} />
