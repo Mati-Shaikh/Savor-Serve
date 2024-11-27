@@ -39,10 +39,10 @@ const App = () => {
         <Route path="/adminDashboard" element={<ProtectedRoute element={AdminDashboard} />} />
         <Route path="/resetpassword" element={<ProtectedRoute element={ResetPassword} />} />
         <Route path="/contactus" element={<ProtectedRoute element={ContactUs} />} />
-        <Route path="/aboutus" element={<ProtectedRoute element={AboutUs} />} />
-        <Route path="/campaign" element={<ProtectedRoute element={CampaignPage} />} />
-        <Route path="/roles" element={<ProtectedRoute element={Role} />} />
-        <Route path="/faqs" element={<ProtectedRoute element={FAQs} />} />
+        <Route path="/aboutus" element={AboutUs} />
+        <Route path="/campaign"  element={CampaignPage} />
+        <Route path="/roles" element={Role} />
+        <Route path="/faqs" element={FAQs} />
         <Route path="/ngoRegister" element={<ProtectedRoute element={NGORegistrationForm} />} />
         <Route path="/addCause" element={<ProtectedRoute element={AddCauseForm} />} />
         <Route path="/ngodashboard" element={<ProtectedRoute element={NGO} />} />
