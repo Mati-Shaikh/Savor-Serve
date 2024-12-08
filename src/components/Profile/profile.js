@@ -61,12 +61,6 @@ const Navbar = () => {
                 <FaUser className="mr-2" /> Account
               </a>
               <a
-                href="/"
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                <FaCog className="mr-2" /> Settings
-              </a>
-              <a
                 onClick={handleLogout}
                 className="cursor-pointer flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105"
               >

@@ -23,6 +23,7 @@ import ShopDashboard from "./components/ShopComponents/DashboardLayout";
 import CampaignPage from "./components/CampaignPage.js/campaign";
 import Role from "./components/Roles/role";
 import AdminVerification from "./components/LoginAndSignupComponents/verifyAdmin";
+import VoucherCreation from "./components/Donate/voucherCreation";
 
 const App = () => {
   return (
@@ -52,6 +53,7 @@ const App = () => {
         <Route path="/donordashboard" element={<ProtectedRoute element={DonorDashboard} />} />
         <Route path="/donatetongo" element={<ProtectedRoute element={DonateToNGO} />} />
         <Route path="/donatetoSupplier" element={<ProtectedRoute element={DonateToSupplier} />} />
+        <Route path="/voucherCreation" element={<ProtectedRoute element={VoucherCreation} />} />
         <Route path="/home" element={<ProtectedRoute element={HomePage} />} />
         <Route path="/profile" element={<ProtectedRoute element={ProfileManagement} />} />
       </Routes>

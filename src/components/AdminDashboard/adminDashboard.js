@@ -722,7 +722,7 @@ useEffect(() => {
               <tbody>
                 {vouchers.map((voucher) => (
                   <tr key={voucher._id} className="border-b hover:bg-gray-50">
-                    <td className="border border-gray-200 p-3">${voucher.amount}</td>
+                    <td className="border border-gray-200 p-3">Rs{voucher.amount}</td>
                     <td className="border border-gray-200 p-3">{voucher.shop}</td>
                     <td className="border border-gray-200 p-3">{voucher.donorId}</td>
                     <td className="border border-gray-200 p-3">

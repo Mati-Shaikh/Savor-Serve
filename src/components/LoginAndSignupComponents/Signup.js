@@ -167,7 +167,6 @@ const SignupPage = () => {
   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 >
   <option value="Donor">Donor</option>
-  <option value="Admin">Admin</option>
   <option value="NGO">NGO</option>
   <option value="GroceryShop">GroceryShop</option>
 </select>
@@ -196,7 +195,7 @@ const SignupPage = () => {
           </p>
           <div className="mt-6 text-center text-sm">
             Existing user?{' '}
-            <a href="/login" className="text-blue-500 hover:underline">Sign in</a>
+            <a href="/login" className="text-blue-500 hover:underline">Log In</a>
           </div>
         </div>
       </div>

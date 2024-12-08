@@ -29,6 +29,9 @@ const Navbar = () => {
                     <a href="/donatetoSupplier" className="text-black font-bold text-xl flex items-center">
                         GroceryShop
                     </a>
+                    <a href="/voucherCreation" className="text-black font-bold text-xl flex items-center">
+                        VoucherManagement
+                    </a>
                 </div>
                 <div className="relative">
                     <button
@@ -45,12 +48,7 @@ const Navbar = () => {
                             >
                                 <FaUser className="mr-2" /> Account
                             </a>
-                            <a
-                                href="/settings"
-                                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                                <FaCog className="mr-2" /> Settings
-                            </a>
+                            
                             <button
                                 onClick={handleLogout}
                                 className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"

@@ -30,6 +30,10 @@ const DonorDashboard = () => {
   const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
   const [count, setcount] = useState(0);
   const [showAddBeneficiary, setShowAddBeneficiary] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
   const [impacteeForm, setImpacteeForm] = useState({
     name: "",
     age: "",
@@ -112,6 +116,8 @@ const DonorDashboard = () => {
         const updatedWallet = response.data.wallet;
         setWalletBalance(updatedWallet.balance);
         setTransactions(updatedWallet.transactions);
+        setCustomAmount(amount);
+    setShowModal(true);
       }
     } catch (error) {
       console.error("Error adding funds", error);
@@ -125,12 +131,23 @@ const DonorDashboard = () => {
 
 
   const handleCustomAmountSubmit = () => {
-    if (customAmount && !isNaN(customAmount) && parseFloat(customAmount) > 0) {
-      handleAddFunds(parseFloat(customAmount));
-      setCustomAmount(""); // Reset input after submission
-    } else {
-      alert("Please enter a valid amount");
+    if (customAmount > 0) {
+      setShowModal(true);
     }
+  };
+  const handlePaymentMethodSelect = (method) => {
+    setSelectedMethod(method);
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsConfirmed(true);
+
+      setTimeout(() => {
+        setShowModal(false);
+        setIsConfirmed(false);
+      }, 2000);
+    }, 2000);
   };
 
   // Fetch wallet data when the component mounts
@@ -326,87 +343,134 @@ const DonorDashboard = () => {
          
 
           {/* Wallet Tab */}
-          {activeTab === 'wallet' && (
-             <div className="space-y-6">
-             <h2 className="text-xl font-semibold">Wallet Management</h2>
-       
-             <div className="rounded-lg bg-blue-50 p-6">
-               <div className="mb-4 flex items-center justify-between">
-                 <div>
-                   <p className="text-sm text-gray-600">Current Balance</p>
-                   <p className="text-3xl font-bold text-blue-600">Rs{walletBalance}</p>
-                 </div>
-                 <Wallet className="h-12 w-12 text-blue-500" />
-               </div>
-       
-               <div className="space-y-4">
-                 <div className="flex space-x-4">
-                   <button
-                     onClick={() => handleAddFunds(100)}
-                     className="flex-1 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-                   >
-                     Add Rs100
-                   </button>
-                   <button
-                     onClick={() => handleAddFunds(500)}
-                     className="flex-1 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-                   >
-                     Add Rs500
-                   </button>
-                   <button
-                     onClick={() => handleAddFunds(1000)}
-                     className="flex-1 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-                   >
-                     Add Rs1000
-                   </button>
-                 </div>
-       
-                 <div className="flex items-center space-x-4">
-                   <input
-                     type="number"
-                     placeholder="Enter custom amount"
-                     value={customAmount}
-                     onChange={handleCustomAmountChange}
-                     className="flex-1 rounded-md border p-2"
-                   />
-                   <button
-                     onClick={handleCustomAmountSubmit}
-                     className="rounded-md bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
-                   >
-                     Add Funds
-                   </button>
-                 </div>
-               </div>
-             </div>
-       
-             {/* Recent Transactions */}
-             <div>
-               <h3 className="mb-4 text-lg font-medium">Recent Transactions</h3>
-               <div className="overflow-x-auto">
-                 <table className="w-full">
-                   <thead className="bg-gray-50">
-                     <tr>
-                       <th className="px-4 py-2 text-left">Date</th>
-                       <th className="px-4 py-2 text-left">Type</th>
-                       <th className="px-4 py-2 text-left">Amount</th>
-                       <th className="px-4 py-2 text-left">Status</th>
-                     </tr>
-                   </thead>
-                   <tbody className="divide-y">
-                     {transactions.map((transaction) => (
-                       <tr key={transaction._id}>
-                         <td className="px-4 py-2">{new Date(transaction.date).toLocaleString()}</td>
-                         <td className="px-4 py-2">{transaction.type}</td>
-                         <td className="px-4 py-2">Rs{transaction.amount}</td>
-                         <td className="px-4 py-2">{transaction.type === "credit" ? "Added" : "Donated"}</td>
-                       </tr>
-                     ))}
-                   </tbody>
-                 </table>
-               </div>
-             </div>
-           </div>
-          )}
+          {activeTab === "wallet" && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-semibold">Wallet Management</h2>
+
+          <div className="rounded-lg bg-blue-50 p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Current Balance</p>
+                <p className="text-3xl font-bold text-blue-600">Rs{walletBalance}</p>
+              </div>
+              <Wallet className="h-12 w-12 text-blue-500" />
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => handleAddFunds(100)}
+                  className="flex-1 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                >
+                  Add Rs100
+                </button>
+                <button
+                  onClick={() => handleAddFunds(500)}
+                  className="flex-1 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                >
+                  Add Rs500
+                </button>
+                <button
+                  onClick={() => handleAddFunds(1000)}
+                  className="flex-1 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                >
+                  Add Rs1000
+                </button>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <input
+                  type="number"
+                  placeholder="Enter custom amount"
+                  value={customAmount}
+                  onChange={handleCustomAmountChange}
+                  className="flex-1 rounded-md border p-2"
+                />
+                <button
+                  onClick={handleCustomAmountSubmit}
+                  className="rounded-md bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+                >
+                  Add Funds
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Transactions */}
+          <div>
+            <h3 className="mb-4 text-lg font-medium">Recent Transactions</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left">Date</th>
+                    <th className="px-4 py-2 text-left">Type</th>
+                    <th className="px-4 py-2 text-left">Amount</th>
+                    <th className="px-4 py-2 text-left">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {transactions.map((transaction) => (
+                    <tr key={transaction._id}>
+                      <td className="px-4 py-2">{new Date(transaction.date).toLocaleString()}</td>
+                      <td className="px-4 py-2">{transaction.type}</td>
+                      <td className="px-4 py-2">Rs{transaction.amount}</td>
+                      <td className="px-4 py-2">{transaction.type === "credit" ? "Added" : "Donated"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-full max-w-md rounded-lg bg-white p-6">
+            {!isLoading && !isConfirmed && (
+              <>
+                <h3 className="text-lg font-semibold mb-4">Select Payment Method</h3>
+                <div className="space-y-4">
+                  <button
+                    onClick={() => handlePaymentMethodSelect("JazzCash")}
+                    className="w-full rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700"
+                  >
+                    JazzCash
+                  </button>
+                  <button
+                    onClick={() => handlePaymentMethodSelect("EasyPaisa")}
+                    className="w-full rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                  >
+                    EasyPaisa
+                  </button>
+                  <button
+                    onClick={() => handlePaymentMethodSelect("Bank")}
+                    className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                  >
+                    Bank Account
+                  </button>
+                </div>
+              </>
+            )}
+
+            {isLoading && (
+              <div className="flex flex-col items-center justify-center space-y-4">
+                <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+                <p>Processing...</p>
+              </div>
+            )}
+
+            {isConfirmed && (
+              <div className="text-center">
+                <p className="text-3xl">✅</p>
+                <p className="mt-4 text-lg font-medium">Amount Successfully Added!</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
         {/* Requests Tab */}
         {activeTab === 'requests' && (
@@ -506,65 +570,60 @@ const DonorDashboard = () => {
 
           {/* History Tab */}
           {activeTab === 'history' && (
-            <div>
-        <h3 className="mb-4 text-lg font-medium">Recent Donations</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-2 text-left">ID</th>
-                <th className="px-4 py-2 text-left">Beneficiary</th>
-                <th className="px-4 py-2 text-left">Amount</th>
-                <th className="px-4 py-2 text-left">Date</th>
-                <th className="px-4 py-2 text-left">Impact Category</th>
-                <th className="px-4 py-2 text-left">Status</th>
-                <th className="px-4 py-2 text-left">Actions</th>
+  <div>
+    <h3 className="mb-4 text-lg font-medium">Recent Donations</h3>
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-4 py-2 text-left">ID</th>
+            <th className="px-4 py-2 text-left">Beneficiary</th>
+            <th className="px-4 py-2 text-left">Amount</th>
+            <th className="px-4 py-2 text-left">Date</th>
+            <th className="px-4 py-2 text-left">Impact Category</th>
+            <th className="px-4 py-2 text-left">Status</th>
+            <th className="px-4 py-2 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y">
+          {Array.isArray(donationHistory) && donationHistory.length > 0 ? (
+            donationHistory.map((donation) => (
+              <tr key={donation._id}>
+                <td className="px-4 py-2">{donation._id}</td>
+                <td className="px-4 py-2">{donation.impacteeId || "N/A"}</td>
+                <td className="px-4 py-2">Rs{donation.amount}</td>
+                <td className="px-4 py-2">{new Date(donation.date).toLocaleDateString()}</td>
+                <td className="px-4 py-2">{donation.impacteeId ? "Impact" : "No Impact"}</td>
+                <td className="px-4 py-2">
+                  <span
+                    className={`rounded-full px-2 py-1 text-sm ${
+                      donation.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {donation.status}
+                  </span>
+                </td>
+                <td className="px-4 py-2">
+                  <div className="flex space-x-2">
+                    <button className="text-blue-600 hover:text-blue-800">View Details</button>
+                    <button className="text-green-600 hover:text-green-800">Download Receipt</button>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y">
-              {donationHistory.map((donation) => (
-                <tr key={donation._id}>
-                  <td className="px-4 py-2">{donation._id}</td>
-                  <td className="px-4 py-2">{donation.impacteeId ? donation.impacteeId : 'N/A'}</td>
-                  <td className="px-4 py-2">Rs{donation.amount}</td>
-                  <td className="px-4 py-2">{new Date(donation.date).toLocaleDateString()}</td>
-                  <td className="px-4 py-2">{donation.impacteeId ? 'Impact' : 'No Impact'}</td>
-                  <td className="px-4 py-2">
-                    <span className={`rounded-full px-2 py-1 text-sm Rs{donation.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
-                      {donation.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2">
-                    <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-800">View Details</button>
-                      <button className="text-green-600 hover:text-green-800">Download Receipt</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      
-
-      {/* Impact Summary */}
-      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="rounded-lg bg-blue-50 p-4">
-          <h4 className="text-sm font-medium text-gray-600">Total Impact</h4>
-          <p className="mt-2 text-2xl font-bold text-blue-600">
-            Rs{donationHistory.reduce((sum, donation) => sum + donation.amount, 0)}
-          </p>
-        </div>
-        <div className="rounded-lg bg-green-50 p-4">
-          <h4 className="text-sm font-medium text-gray-600">Lives Impacted</h4>
-          <p className="mt-2 text-2xl font-bold text-green-600">
-            {donationHistory.length}
-          </p>
-        </div>
-      </div>
-      </div>
-      
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7" className="text-center p-4">No donations available.</td>
+            </tr>
           )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+
         </div>
       </div>
     </div>

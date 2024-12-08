@@ -64,12 +64,6 @@ import {
                 onMouseLeave={() => setIsOpen(false)}
               >
                 <a
-                  href="/"
-                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105"
-                >
-                  <FaCog className="mr-2" /> Settings
-                </a>
-                <a
                   onClick={handleLogout}
                   className="cursor-pointer flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105"
                 >
@@ -186,7 +180,7 @@ const NGODashboard = () => {
             <div>
               <h3 className="text-xl font-semibold">Total Goal</h3>
               <p className="text-2xl font-bold">
-                ${ngoData?.causes?.reduce((sum, cause) => sum + cause.goal, 0) || 0}
+                Rs{ngoData?.causes?.reduce((sum, cause) => sum + cause.goal, 0) || 0}
               </p>
             </div>
           </div>
@@ -194,7 +188,7 @@ const NGODashboard = () => {
             <FileText className="mr-4 text-red-500" size={48} />
             <div>
               <h3 className="text-xl font-semibold">Total Donations</h3>
-              <p className="text-2xl font-bold">${totalDonations}</p>
+              <p className="text-2xl font-bold">Rs{totalDonations}</p>
             </div>
           </div>
         </div>
@@ -287,7 +281,7 @@ const NGODashboard = () => {
                 <div key={packageItem._id} className="mb-2 p-2 bg-gray-100 rounded-md">
                   <p className="text-gray-600">Title: {packageItem.title}</p>
                   <p className="text-gray-600">Description: {packageItem.description}</p>
-                  <p className="text-gray-600">Price: ${packageItem.price}</p>
+                  <p className="text-gray-600">Price: Rs{packageItem.price}</p>
                 </div>
               ))}
             </div>
