@@ -711,7 +711,7 @@ useEffect(() => {
               <thead>
                 <tr className="bg-gray-50">
                   <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Amount</th>
-                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Shop ID</th>
+                  <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Null ID</th>
                   <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Donor ID</th>
                   <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Status</th>
                   <th className="border border-gray-200 p-3 text-left font-semibold text-gray-600">Tracking ID</th>

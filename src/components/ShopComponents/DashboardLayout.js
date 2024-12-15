@@ -187,11 +187,11 @@ const Dashboard = () => {
           </div>
         )}
 
-        {activeTab === "vouchers" && <VoucherManagement/>}
-
-        {isRegisterModalOpen && (
+{activeTab === "vouchers" && shopDetails && <VoucherManagement />}
+        
+        {!shopDetails && (
           <RegisterShopModal
-            onClose={() => setIsRegisterModalOpen(false)}
+            onClose={() => {} /* Disable close */}
             onSuccess={handleRegisterSuccess}
           />
         )}

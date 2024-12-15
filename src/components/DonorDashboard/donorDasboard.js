@@ -472,101 +472,101 @@ const DonorDashboard = () => {
         </div>
       )}
 
-        {/* Requests Tab */}
-        {activeTab === 'requests' && (
-             <div className="space-y-6">
-             <div className="flex items-center justify-between">
-               <h2 className="text-xl font-semibold">Beneficiary Requests</h2>
-               <button
-                 onClick={() => setShowAddBeneficiary(!showAddBeneficiary)}
-                 className="flex items-center space-x-2 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-               >
-                 <Plus className="h-4 w-4" />
-                 <span>Add New Beneficiary</span>
-               </button>
-             </div>
-       
-             {showAddBeneficiary && (
-               <div className="mt-6">
-                 <h3 className="text-lg font-semibold">Add New Impactee</h3>
-                 <div className="space-y-4">
-                   <input
-                     type="text"
-                     name="name"
-                     value={impacteeForm.name}
-                     onChange={handleInputChange}
-                     placeholder="Name"
-                     className="w-full p-2 border border-gray-300 rounded-md"
-                   />
-                   <input
-                     type="number"
-                     name="age"
-                     value={impacteeForm.age}
-                     onChange={handleInputChange}
-                     placeholder="Age"
-                     className="w-full p-2 border border-gray-300 rounded-md"
-                   />
-                   <textarea
-                     name="needs"
-                     value={impacteeForm.needs}
-                     onChange={handleInputChange}
-                     placeholder="Needs"
-                     className="w-full p-2 border border-gray-300 rounded-md"
-                   />
-                   <button
-                     onClick={submitImpacteeRequest}
-                     className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
-                   >
-                     Submit Request
-                   </button>
-                 </div>
-               </div>
-             )}
-       
-             {/* Pending Requests */}
-             <div>
-               <h3 className="mb-4 text-lg font-medium">Pending Requests</h3>
-               <div className="overflow-x-auto">
-                 <table className="w-full">
-                   <thead className="bg-gray-50">
-                     <tr>
-                       <th className="px-4 py-2 text-left">ID</th>
-                       <th className="px-4 py-2 text-left">Beneficiary</th>
-                       <th className="px-4 py-2 text-left">Status</th>
-                       <th className="px-4 py-2 text-left">Date</th>
-                       <th className="px-4 py-2 text-left">Actions</th>
-                     </tr>
-                   </thead>
-                   <tbody className="divide-y">
-                     {pendingRequests.map((request) => (
-                       <tr key={request._id}>
-                         <td className="px-4 py-2">{request._id}</td>
-                         <td className="px-4 py-2">{request.impacteeDetails.name}</td>
-                         <td className="px-4 py-2">
-                           <span
-                             className={`rounded-full px-2 py-1 text-sm Rs{
-                               request.status === "Pending"
-                                 ? "bg-yellow-100 text-yellow-800"
-                                 : "bg-green-100 text-green-800"
-                             }`}
-                           >
-                             {request.status}
-                           </span>
-                         </td>
-                         <td className="px-4 py-2">{new Date(request.createdAt).toLocaleString()}</td>
-                         <td className="px-4 py-2">
-                           <button className="text-blue-600 hover:text-blue-800">
-                             View Details
-                           </button>
-                         </td>
-                       </tr>
-                     ))}
-                   </tbody>
-                 </table>
-               </div>
-             </div>
-           </div>
-          )}
+{activeTab === 'requests' && (
+  <div className="space-y-6">
+    <div className="flex items-center justify-between">
+      <h2 className="text-xl font-semibold">Beneficiary Requests</h2>
+      <button
+        onClick={() => setShowAddBeneficiary(!showAddBeneficiary)}
+        className="flex items-center space-x-2 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+      >
+        <Plus className="h-4 w-4" />
+        <span>Add New Beneficiary</span>
+      </button>
+    </div>
+
+    {showAddBeneficiary && (
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold">Add New Impactee</h3>
+        <div className="space-y-4">
+          <input
+            type="text"
+            name="name"
+            value={impacteeForm.name}
+            onChange={handleInputChange}
+            placeholder="Name"
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+          <input
+            type="number"
+            name="age"
+            value={impacteeForm.age}
+            onChange={handleInputChange}
+            placeholder="Age"
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+          <textarea
+            name="needs"
+            value={impacteeForm.needs}
+            onChange={handleInputChange}
+            placeholder="Needs"
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+          <button
+            onClick={submitImpacteeRequest}
+            className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+          >
+            Submit Request
+          </button>
+        </div>
+      </div>
+    )}
+
+    {/* Pending Requests */}
+    <div>
+      <h3 className="mb-4 text-lg font-medium">Pending Requests</h3>
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-2 text-left">ID</th>
+              <th className="px-4 py-2 text-left">Beneficiary</th>
+              <th className="px-4 py-2 text-left">Status</th>
+              <th className="px-4 py-2 text-left">Date</th>
+              <th className="px-4 py-2 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y">
+            {pendingRequests.map((request) => (
+              <tr key={request._id}>
+                <td className="px-4 py-2">{request._id}</td>
+                <td className="px-4 py-2">{request.impacteeDetails.name}</td>
+                <td className="px-4 py-2">
+                  <span
+                    className={`rounded-full px-2 py-1 text-sm ${
+                      request.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {request.status}
+                  </span>
+                </td>
+                <td className="px-4 py-2">{new Date(request.createdAt).toLocaleString()}</td>
+                <td className="px-4 py-2">
+                  <button className="text-blue-600 hover:text-blue-800">
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+)}
+
 
           {/* History Tab */}
           {activeTab === 'history' && (
@@ -581,7 +581,6 @@ const DonorDashboard = () => {
             <th className="px-4 py-2 text-left">Amount</th>
             <th className="px-4 py-2 text-left">Date</th>
             <th className="px-4 py-2 text-left">Impact Category</th>
-            <th className="px-4 py-2 text-left">Status</th>
             <th className="px-4 py-2 text-left">Actions</th>
           </tr>
         </thead>
@@ -594,17 +593,7 @@ const DonorDashboard = () => {
                 <td className="px-4 py-2">Rs{donation.amount}</td>
                 <td className="px-4 py-2">{new Date(donation.date).toLocaleDateString()}</td>
                 <td className="px-4 py-2">{donation.impacteeId ? "Impact" : "No Impact"}</td>
-                <td className="px-4 py-2">
-                  <span
-                    className={`rounded-full px-2 py-1 text-sm ${
-                      donation.status === "Pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {donation.status}
-                  </span>
-                </td>
+               
                 <td className="px-4 py-2">
                   <div className="flex space-x-2">
                     <button className="text-blue-600 hover:text-blue-800">View Details</button>
