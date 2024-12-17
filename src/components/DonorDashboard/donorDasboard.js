@@ -131,10 +131,14 @@ const DonorDashboard = () => {
 
 
   const handleCustomAmountSubmit = () => {
-    if (customAmount > 0) {
-      setShowModal(true);
+    const amount = parseFloat(customAmount); // Ensure the custom amount is a valid number
+    if (!isNaN(amount) && amount > 0) {
+      handleAddFunds(amount); // Reuse handleAddFunds function
+    } else {
+      alert("Please enter a valid amount greater than 0.");
     }
   };
+  
   const handlePaymentMethodSelect = (method) => {
     setSelectedMethod(method);
     setIsLoading(true);

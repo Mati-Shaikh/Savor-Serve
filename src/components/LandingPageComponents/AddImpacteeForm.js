@@ -7,8 +7,20 @@ const AddImpacteeForm = ({ onAddImpactee }) => { // Accepting onAddImpactee from
     cnic: ''
   });
 
+  // CNIC Validation Function
+  const isValidCNIC = (cnic) => {
+    const cnicPattern = /^\d{5}-\d{7}-\d{1}$/; // CNIC format: XXXXX-XXXXXXX-X
+    return cnicPattern.test(cnic);
+  };
+
   const handleAddImpactee = async () => {
     try {
+      // CNIC validation
+      if (!isValidCNIC(impactee.cnic)) {
+        alert("Invalid CNIC format. Please use XXXXX-XXXXXXX-X.");
+        return;
+      }
+
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -54,7 +66,7 @@ const AddImpacteeForm = ({ onAddImpactee }) => { // Accepting onAddImpactee from
           <input
             type="text"
             value={impactee.name}
-            onChange={(e) => setImpactee({...impactee, name: e.target.value})}
+            onChange={(e) => setImpactee({ ...impactee, name: e.target.value })}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Impactee Name"
           />
@@ -64,7 +76,7 @@ const AddImpacteeForm = ({ onAddImpactee }) => { // Accepting onAddImpactee from
           <input
             type="tel"
             value={impactee.phone}
-            onChange={(e) => setImpactee({...impactee, phone: e.target.value})}
+            onChange={(e) => setImpactee({ ...impactee, phone: e.target.value })}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Phone Number"
           />
@@ -74,9 +86,9 @@ const AddImpacteeForm = ({ onAddImpactee }) => { // Accepting onAddImpactee from
           <input
             type="text"
             value={impactee.cnic}
-            onChange={(e) => setImpactee({...impactee, cnic: e.target.value})}
+            onChange={(e) => setImpactee({ ...impactee, cnic: e.target.value })}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="CNIC Number"
+            placeholder="CNIC (XXXXX-XXXXXXX-X)"
           />
         </div>
         <button

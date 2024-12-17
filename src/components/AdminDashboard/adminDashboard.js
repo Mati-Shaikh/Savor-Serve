@@ -81,6 +81,20 @@ const apiService = {
 };
 
 
+
+const handleDeleteDonor = async (donorId) => {
+  try {
+    await apiService.deleteDonor(donorId); // API call to delete the donor
+    alert("Donor deleted successfully!");
+    // Optionally, you can refresh the list or remove the deleted donor from state here
+  } catch (error) {
+    console.error("Error deleting donor:", error.message);
+    alert("Failed to delete donor. Please try again.");
+  }
+};
+
+
+
 /// Modal Component for Detailed View and Edit
 const DetailModal = ({ isOpen, onClose, children }) => {
     if (!isOpen) return null;
@@ -1034,9 +1048,12 @@ useEffect(() => {
                 <td className="p-2">{user.PhoneNumber}</td>
                 <td className="p-2 flex space-x-2">
                   
-                  <button className="text-red-500 hover:bg-red-100 p-1 rounded">
-                    <Trash2 size={16} />
-                  </button>
+                <button
+            className="text-red-500 hover:bg-red-100 p-1 rounded"
+            onClick={() => handleDeleteDonor(user._id)} // Call the delete function
+          >
+            <Trash2 size={16} />
+          </button>
                 </td>
               </tr>
             ))}
