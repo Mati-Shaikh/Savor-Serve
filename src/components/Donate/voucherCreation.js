@@ -161,7 +161,7 @@ const VoucherCreation = () => {
           <thead>
             <tr className="bg-gray-100">
               <th className="border px-4 py-2">Name</th>
-              <th className="border px-4 py-2">Contact</th>
+              <th className="border px-4 py-2">Contact/CNIC</th>
               <th className="border px-4 py-2">Address</th>
               <th className="border px-4 py-2">Action</th>
             </tr>
@@ -173,10 +173,10 @@ const VoucherCreation = () => {
                   {activeTab === "impactees" ? item.impacteeDetails?.name : item.name}
                 </td>
                 <td className="border px-4 py-2">
-                  {activeTab === "impactees" ? "N/A" : item.contactNumber}
+                  {activeTab === "impactees" ? item.impacteeDetails?.cnic : item.contactNumber}
                 </td>
                 <td className="border px-4 py-2">
-                  {activeTab === "impactees" ? "N/A" : item.address}
+                  {activeTab === "impactees" ? item.impacteeDetails?.address : item.address}
                 </td>
                 <td className="border px-4 py-2">
                   <button

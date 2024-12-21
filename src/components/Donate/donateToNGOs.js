@@ -193,23 +193,65 @@ const NGOsComponent = () => {
 
         {/* View Details Modal */}
         {viewDetailsOpen && selectedNgo && (
-          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-              <h2 className="text-2xl font-bold mb-4">{selectedNgo.name}</h2>
-              <p><strong>Registration Number:</strong> {selectedNgo.registrationNumber}</p>
-              <p><strong>Description:</strong> {selectedNgo.description}</p>
-              <p><strong>Phone:</strong> {selectedNgo.phone}</p>
-              <p><strong>Address:</strong> {selectedNgo.address}</p>
-              <p><strong>Website:</strong> <a href={selectedNgo.website} className="text-blue-500">{selectedNgo.website}</a></p>
-              <button
-                onClick={() => setViewDetailsOpen(false)}
-                className="mt-4 bg-red-500 text-white py-2 px-4 rounded"
-              >
-                Close
-              </button>
+  <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md overflow-y-auto max-h-screen">
+      <h2 className="text-2xl font-bold mb-4">{selectedNgo.name}</h2>
+      <p><strong>Registration Number:</strong> {selectedNgo.registrationNumber}</p>
+      <p><strong>Description:</strong> {selectedNgo.description}</p>
+      <p><strong>Phone:</strong> {selectedNgo.phone}</p>
+      <p><strong>Address:</strong> {selectedNgo.address}</p>
+      <p>
+        <strong>Website:</strong>{" "}
+        <a href={selectedNgo.website} className="text-blue-500" target="_blank" rel="noopener noreferrer">
+          {selectedNgo.website}
+        </a>
+      </p>
+
+      {/* Causes Section */}
+      <div className="mt-6">
+        <h3 className="text-xl font-semibold mb-2">Causes</h3>
+        {Array.isArray(selectedNgo.causes) && selectedNgo.causes.length > 0 ? (
+          selectedNgo.causes.map((cause) => (
+            <div key={cause._id} className="bg-gray-100 p-3 rounded-lg mb-4">
+              <p><strong>Title:</strong> {cause.title}</p>
+              <p><strong>Description:</strong> {cause.description}</p>
+              <p><strong>Goal:</strong> ${cause.goal}</p>
+              <p>
+                <strong>Timeline:</strong> {new Date(cause.timeline).toLocaleDateString()}
+              </p>
+
+              {/* Packages for each cause */}
+              {Array.isArray(cause.packages) && cause.packages.length > 0 ? (
+                <div className="mt-4">
+                  <h4 className="text-lg font-semibold mb-2">Packages</h4>
+                  {cause.packages.map((pkg) => (
+                    <div key={pkg._id} className="bg-white p-3 rounded-lg shadow mb-2">
+                      <p><strong>Title:</strong> {pkg.title}</p>
+                      <p><strong>Description:</strong> {pkg.description}</p>
+                      <p><strong>Price:</strong> ${pkg.price}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-2 text-gray-500">No packages available for this cause.</p>
+              )}
             </div>
-          </div>
+          ))
+        ) : (
+          <p className="text-gray-500">No causes available for this NGO.</p>
         )}
+      </div>
+
+      {/* Close Button */}
+      <button
+        onClick={() => setViewDetailsOpen(false)}
+        className="mt-6 bg-red-500 text-white py-2 px-4 rounded w-full"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
 
         {donationSuccess && (
           <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">

@@ -158,18 +158,44 @@ const DonorDashboard = () => {
   useEffect(() => {
     fetchWalletData();
   }, []);
+  useEffect(() => {
+    fetchPendingRequests();
+  }, []); // Run once on component mount
 
 
   const fetchPendingRequests = async () => {
     try {
-      const response = await axios.get("http://localhost:3005/api/donor/impactees", {
-        headers: { token:token },
+      const response = await axios.get("http://localhost:3005/api/admin/impactees", {
+        headers: { token },
       });
-      setPendingRequests(response.data);
+  
+      // Validate response structure
+      if (!response.data || !response.data.impactees) {
+        console.error("Unexpected response format:", response.data);
+        return;
+      }
+  
+      // Decode the token to extract donorId
+      const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode the JWT token
+      const donorId = decodedToken._id; // Assuming the token contains `_id` as the donor's ID
+  
+      // Filter impactees whose donorId matches the decoded token's id
+      const matchingImpactees = response.data.impactees.filter(
+        (impactee) => impactee.donorId && impactee.donorId._id === donorId
+      );
+  
+      // Update state or UI with the matching impactees
+      setPendingRequests(matchingImpactees); // Assuming setPendingRequests updates the UI state
     } catch (error) {
-      console.error("Error fetching pending requests", error);
+      if (error.response && error.response.status === 404) {
+        console.error("API endpoint not found. Check the URL and server configuration.");
+      } else {
+        console.error("Error fetching pending requests:", error);
+      }
     }
   };
+  
+  
 
   // Function to handle submitting a new impactee request
   const submitImpacteeRequest = async () => {
@@ -196,9 +222,7 @@ const DonorDashboard = () => {
     setImpacteeForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => {
-    fetchPendingRequests();
-  }, []); // Run once on component mount
+ 
 
   const fetchPendingRequestsCount = async () => {
     try {
@@ -500,21 +524,24 @@ const DonorDashboard = () => {
             onChange={handleInputChange}
             placeholder="Name"
             className="w-full p-2 border border-gray-300 rounded-md"
+            required
           />
           <input
-            type="number"
-            name="age"
-            value={impacteeForm.age}
+            type="text"
+            name="cnic"
+            value={impacteeForm.cnic}
             onChange={handleInputChange}
-            placeholder="Age"
+            placeholder="CNIC (e.g., 12345-6789012-3)"
             className="w-full p-2 border border-gray-300 rounded-md"
+            required
           />
           <textarea
-            name="needs"
-            value={impacteeForm.needs}
+            name="address"
+            value={impacteeForm.address}
             onChange={handleInputChange}
-            placeholder="Needs"
+            placeholder="Address"
             className="w-full p-2 border border-gray-300 rounded-md"
+            required
           />
           <button
             onClick={submitImpacteeRequest}
@@ -541,29 +568,41 @@ const DonorDashboard = () => {
             </tr>
           </thead>
           <tbody className="divide-y">
-            {pendingRequests.map((request) => (
-              <tr key={request._id}>
-                <td className="px-4 py-2">{request._id}</td>
-                <td className="px-4 py-2">{request.impacteeDetails.name}</td>
-                <td className="px-4 py-2">
-                  <span
-                    className={`rounded-full px-2 py-1 text-sm ${
-                      request.status === "Pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {request.status}
-                  </span>
-                </td>
-                <td className="px-4 py-2">{new Date(request.createdAt).toLocaleString()}</td>
-                <td className="px-4 py-2">
-                  <button className="text-blue-600 hover:text-blue-800">
-                    View Details
-                  </button>
+            {pendingRequests.length > 0 ? (
+              pendingRequests.map((request) => (
+                <tr key={request._id}>
+                  <td className="px-4 py-2">{request._id}</td>
+                  <td className="px-4 py-2">{request.impacteeDetails.name}</td>
+                  <td className="px-4 py-2">
+                    <span
+                      className={`rounded-full px-2 py-1 text-sm ${
+                        request.status === "Pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : request.status === "Approved"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {request.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2">
+                    {new Date(request.createdAt).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-2">
+                    <button className="text-blue-600 hover:text-blue-800">
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="px-4 py-2 text-center">
+                  No beneficiary requests found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
